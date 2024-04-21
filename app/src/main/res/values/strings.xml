@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TorchVisionApp</string>
+    <string name="heading_onboarding_1">CONVERT FILE TO TEXT</string>
+    <string name="heading_onboarding_2">TRANSLATE</string>
+    <string name="heading_onboarding_3">SHARE FILES EFFICIENTLY</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="sign_up">CREATE AN ACCOUNT</string>
+</resources>
