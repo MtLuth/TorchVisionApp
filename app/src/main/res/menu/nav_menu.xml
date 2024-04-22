@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navHome"
+        android:icon="@drawable/icon_home"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/navMyFolder"
+        android:icon="@drawable/icon_folder"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/navHeart"
+        android:icon="@drawable/icon_heart"
+        tools:ignore="MenuTitle" />
+
+    <item
+        android:id="@+id/navSetting"
+        android:icon="@drawable/icon_setting"
+        tools:ignore="MenuTitle" />
+
+</menu>

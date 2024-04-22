@@ -56,12 +56,11 @@ public class SignUpActivity extends AppCompatActivity {
         editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Toast.makeText(SignUpActivity.this, "aaaa", Toast.LENGTH_SHORT).show();
                 if (hasFocus) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        v.setOutlineAmbientShadowColor(ContextCompat.getColor(
-                                getApplicationContext(), R.color.primary_color));
-                    }
+                    v.setBackground(getDrawable(R.drawable.edit_text_actived));
+                }
+                else {
+                    v.setBackground(getDrawable(R.drawable.input_text_custom));
                 }
             }
         });
