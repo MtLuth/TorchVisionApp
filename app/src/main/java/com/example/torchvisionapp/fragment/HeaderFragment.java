@@ -44,16 +44,11 @@ public class HeaderFragment extends Fragment {
                                 container,
                                 false
                         );
-        ViewHolder holder = new ViewHolder();
-        holder.headerTitle = (TextView) binding.textHeader;
-        holder.headerTitle.setText(title);
-
+        binding.textHeader.setText(title);
+        if (title == "SETTINGS") {
+            binding.btnSearch.setVisibility(View.INVISIBLE);
+            binding.btnSort.setVisibility(View.INVISIBLE);
+        }
         return binding.getRoot();
-    }
-
-    private static class ViewHolder {
-        TextView headerTitle;
-        ImageView btnSort;
-        ImageView btnSearch;
     }
 }

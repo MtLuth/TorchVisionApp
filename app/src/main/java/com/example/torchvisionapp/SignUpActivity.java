@@ -22,6 +22,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button btnSignUp;
     TextView txtSignIn;
     EditText editEmail;
+    Button btnContinueWithGuest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,15 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), SendCodeVerifyActivity.class);
+                startActivity(i);
+            }
+        });
+
+        btnContinueWithGuest = binding.btnContinueWithGuest;
+        btnContinueWithGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), MainScreenAppActivity.class);
                 startActivity(i);
             }
         });
