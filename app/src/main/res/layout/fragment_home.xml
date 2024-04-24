@@ -30,6 +30,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
+                    android:id="@+id/btnImageToText"
                     android:src="@drawable/icon_image_to_text"/>
 
                 <TextView
@@ -73,11 +74,11 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
+                    android:id="@+id/btnAddFolder"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/icon_tool_folder"
-                    android:id="@+id/btnImageToText"/>
+                    android:src="@drawable/icon_tool_folder" />
 
                 <TextView
                     android:layout_width="wrap_content"
