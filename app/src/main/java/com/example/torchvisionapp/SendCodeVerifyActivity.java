@@ -27,6 +27,7 @@ public class SendCodeVerifyActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), VerificationCodeActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
