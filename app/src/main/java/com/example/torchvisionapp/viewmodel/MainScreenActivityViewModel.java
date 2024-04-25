@@ -20,6 +20,7 @@ public class MainScreenActivityViewModel extends AndroidViewModel {
     }
 
     public ArrayList<SettingItem> loadSettingItemList() {
+        settingItemArrayList = new ArrayList<>();
         SettingItem item1 = new SettingItem(R.drawable.icon_user, "Sign In");
         settingItemArrayList.add(item1);
 
@@ -33,6 +34,7 @@ public class MainScreenActivityViewModel extends AndroidViewModel {
     }
 
     public ArrayList<String> loadPrivacyList() {
+        privacyList = new ArrayList<>();
         privacyList.add("Your photos, your decision! You decide when and if any photos is uploaded to any cloud services.");
         privacyList.add("Text recognition is processed on-device. No photos are ever uploaded for data processing. Everything happens right on your phone.");
         privacyList.add("We do not collect ANY information about you.");

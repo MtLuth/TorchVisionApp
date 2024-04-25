@@ -91,4 +91,9 @@ public class SettingFragment extends Fragment implements ItemClickListener {
             startActivity(i);
         }
     }
+
+    @Override
+    public void onFileItemClick(View v, int pos) {
+
+    }
 }

@@ -3,6 +3,7 @@ package com.example.torchvisionapp.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.torchvisionapp.view.FolderAdapter;
+import com.example.torchvisionapp.model.FileItem;
+import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.FragmentHomeBinding;
@@ -38,8 +40,8 @@ public class HomeFragment extends Fragment{
     private ImageView folderImageView;
 
     private RecyclerView recyclerView;
-    private FolderAdapter folderAdapter;
-    private List<String> folderList;
+    private FileAdapter folderAdapter;
+    private ArrayList<FileItem> folderList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,7 +99,7 @@ public class HomeFragment extends Fragment{
 
         showExistingFolders();
 
-        folderAdapter = new FolderAdapter(requireContext(), folderList);
+        folderAdapter = new FileAdapter(folderList, getContext());
         recyclerView.setAdapter(folderAdapter);
 
         return view;
@@ -145,7 +147,7 @@ public class HomeFragment extends Fragment{
         File folder = new File(requireContext().getFilesDir(), folderName);
         if (!folder.exists()) {
             if (folder.mkdir()) {
-                folderList.add(folderName);
+                folderList.add(new FileItem(R.drawable.iconfolder_actived, folderName, "0 files"));
                 folderAdapter.notifyDataSetChanged();
                 Toast.makeText(requireContext(), "Folder created successfully", Toast.LENGTH_SHORT).show();
             } else {
@@ -161,7 +163,12 @@ public class HomeFragment extends Fragment{
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
-                    folderList.add(file.getName());
+                    FileItem fileItem = new FileItem();
+                    fileItem.setName(file.getName());
+                    fileItem.setIcon(R.drawable.iconfolder_actived);
+                    fileItem.setStatus("0 file");
+
+                    folderList.add(fileItem);
                 }
             }
         }
