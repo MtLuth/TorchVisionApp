@@ -7,11 +7,11 @@
 
     <ImageView
         android:id="@+id/imageItem"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_margin="16dp"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher_background"
+        android:src="@drawable/ic_folder_foreground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:text="folder"
-        android:textColor="#fff"
-        android:textSize="32sp"
+        android:textColor="#000000"
+        android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/imageItem"
         app:layout_constraintTop_toTopOf="@+id/imageItem" />
 

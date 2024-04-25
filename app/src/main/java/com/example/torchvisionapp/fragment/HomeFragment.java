@@ -22,7 +22,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.torchvisionapp.FolderAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.FragmentHomeBinding;
@@ -31,11 +34,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment{
     ImageView btnCamera, btnAddFolder;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ImageView folderImageView;
+
+    private RecyclerView recyclerView;
+    private FolderAdapter folderAdapter;
+    private List<String> folderList;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +94,16 @@ public class HomeFragment extends Fragment{
                 showAddFolderDialog();
             }
         });
+
+        recyclerView = binding.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        folderList = new ArrayList<>();
+
+        showExistingFolders();
+
+        folderAdapter = new FolderAdapter(requireContext(), folderList);
+        recyclerView.setAdapter(folderAdapter);
+
         return view;
     }
     private void openCameraActivity() {
@@ -102,18 +121,13 @@ public class HomeFragment extends Fragment{
         Button btnSave = dialogView.findViewById(R.id.btnSave);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
-        // Tạo và hiển thị AlertDialog từ dialogBuilder
         final AlertDialog alertDialog = dialogBuilder.create();
-        // Xử lý sự kiện khi nhấn vào Save
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String folderName = editTextFolderName.getText().toString().trim();
                 if (!folderName.isEmpty()) {
-                    // Thực hiện lưu folderName ở đây, ví dụ:
-                    // saveFolder(folderName);
-                    Toast.makeText(requireContext(), "Saved: " + folderName, Toast.LENGTH_SHORT).show();
-                    // Đóng dialog khi đã lưu thành công
+                    createFolder(folderName);
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(requireContext(), "Please enter folder name", Toast.LENGTH_SHORT).show();
@@ -121,7 +135,7 @@ public class HomeFragment extends Fragment{
             }
         });
 
-        // Xử lý sự kiện khi nhấn vào Cancel
+
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,5 +143,31 @@ public class HomeFragment extends Fragment{
             }
         });
         alertDialog.show();
+    }
+
+    private void createFolder(String folderName) {
+        File folder = new File(requireContext().getFilesDir(), folderName);
+        if (!folder.exists()) {
+            if (folder.mkdir()) {
+                folderList.add(folderName);
+                folderAdapter.notifyDataSetChanged();
+                Toast.makeText(requireContext(), "Folder created successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(requireContext(), "Failed to create folder", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(requireContext(), "Folder already exists", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showExistingFolders() {
+        File[] files = requireContext().getFilesDir().listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    folderList.add(file.getName());
+                }
+            }
+        }
     }
 }
