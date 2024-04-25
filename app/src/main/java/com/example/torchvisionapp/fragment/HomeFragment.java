@@ -2,8 +2,6 @@ package com.example.torchvisionapp.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +23,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.torchvisionapp.FolderAdapter;
+import com.example.torchvisionapp.view.FolderAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.FragmentHomeBinding;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

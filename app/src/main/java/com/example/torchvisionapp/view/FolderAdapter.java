@@ -1,4 +1,4 @@
-package com.example.torchvisionapp;
+package com.example.torchvisionapp.view;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.torchvisionapp.R;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
     @NonNull
     @Override
     public FolderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.folder_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.folder_item, parent, false);
         return new FolderViewHolder(view);
     }
 
