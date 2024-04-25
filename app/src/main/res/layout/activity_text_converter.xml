@@ -7,19 +7,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/linearLayout5"
-            android:layout_width="match_parent"
-            android:layout_height="135dp"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:background="@drawable/header_frame_layout"
+        <androidx.cardview.widget.CardView
+            android:layout_width="415dp"
+            android:layout_height="345dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.423">
 
+            <EditText
+                android:id="@+id/recgText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="10"
+                android:scrollbars="vertical" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="409dp"
+            android:layout_height="126dp"
+            android:background="@drawable/header_frame_layout"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
             <LinearLayout
-                android:id="@+id/toolImageToText"
+                android:id="@+id/toolCopy"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="15dp"
@@ -30,7 +49,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:id="@+id/btnImageToText"
+                    android:id="@+id/btnCopy"
                     android:src="@drawable/icon_image_to_text"/>
 
                 <TextView
@@ -43,30 +62,32 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/toolTranslate"
+                android:id="@+id/toolCapture"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+
                 <ImageView
+                    android:id="@+id/btnCamera"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/icon_tool_translate"/>
+                    android:src="@drawable/ic_camera_foreground" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Translate"
                     android:layout_marginTop="5dp"
-                    android:textSize="18sp"/>
+                    android:text="capture"
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/toolAddFolder"
+                android:id="@+id/toolSaveFile"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:paddingLeft="15dp"
@@ -74,7 +95,7 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                    android:id="@+id/btnAddFolder"
+                    android:id="@+id/btnsaveFile"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center"
@@ -83,7 +104,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add Folder"
+                    android:text="Save"
                     android:layout_marginTop="5dp"
                     android:textSize="18sp"/>
 
@@ -91,15 +112,6 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

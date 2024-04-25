@@ -1,10 +1,13 @@
+
 package com.example.torchvisionapp.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,15 +17,26 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.torchvisionapp.AboutUs;
+import com.example.torchvisionapp.ItemClickListener;
 import com.example.torchvisionapp.R;
+import com.example.torchvisionapp.SignInActivity;
 import com.example.torchvisionapp.databinding.FragmentSettingsBinding;
 import com.example.torchvisionapp.model.SettingItem;
 import com.example.torchvisionapp.view.PrivacyListAdapter;
 import com.example.torchvisionapp.view.SettingItemAdapter;
+import com.example.torchvisionapp.viewmodel.MainScreenActivityViewModel;
 
 import java.util.ArrayList;
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment implements ItemClickListener {
+
+    MainScreenActivityViewModel viewModel;
+    ArrayList<SettingItem> settingItemArrayList = new ArrayList<>();
+    ArrayList<String> privacyList = new ArrayList<>();
+    SettingItemAdapter settingItemAdapter;
+
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -36,8 +50,8 @@ public class SettingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-
+        viewModel = new ViewModelProvider(getActivity())
+                .get(MainScreenActivityViewModel.class);
         FragmentSettingsBinding binding = DataBindingUtil.inflate(LayoutInflater.from(container.getContext()),
                 R.layout.fragment_settings,
                 container,
@@ -48,29 +62,33 @@ public class SettingFragment extends Fragment {
     }
 
     private void loadPrivacy(FragmentSettingsBinding binding) {
-        ArrayList<String> privacyList = new ArrayList<>();
-        privacyList.add("Your photos, your decision! You decide when and if any photos is uploaded to any cloud services.");
-        privacyList.add("Text recognition is processed on-device. No photos are ever uploaded for data processing. Everything happens right on your phone.");
-        privacyList.add("We do not collect ANY information about you.");
+
+        privacyList = viewModel.loadPrivacyList();
+
         PrivacyListAdapter adapter =new PrivacyListAdapter(privacyList, getContext());
         binding.listPrivacy.setAdapter(adapter);
         binding.listPrivacy.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private void loadSettingItem(FragmentSettingsBinding binding) {
-        ArrayList<SettingItem> settingItemArrayList = new ArrayList<>();
 
-        SettingItem item1 = new SettingItem(R.drawable.icon_user, "Sign In");
-        settingItemArrayList.add(item1);
+        settingItemArrayList = viewModel.loadSettingItemList();
 
-        SettingItem item2 = new SettingItem(R.drawable.icon_about_us, "About Us");
-        settingItemArrayList.add(item2);
-
-        SettingItem item3 = new SettingItem(R.drawable.icon_phone, "Contact Us");
-        settingItemArrayList.add(item3);
-
-        SettingItemAdapter adapter = new SettingItemAdapter(settingItemArrayList, getContext());
-        binding.recyclerViewListSettingItem.setAdapter(adapter);
+        settingItemAdapter = new SettingItemAdapter(settingItemArrayList, getContext());
+        settingItemAdapter.setClickListener(this);
+        binding.recyclerViewListSettingItem.setAdapter(settingItemAdapter);
         binding.recyclerViewListSettingItem.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    @Override
+    public void onSettingItemClick(View v, int pos) {
+        if (pos == 0) {
+            Intent i = new Intent(v.getContext(), SignInActivity.class);
+            startActivity(i);
+        }
+        if (pos==1) {
+            Intent i = new Intent(v.getContext(), AboutUs.class);
+            startActivity(i);
+        }
     }
 }
