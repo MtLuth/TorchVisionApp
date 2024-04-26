@@ -75,7 +75,7 @@ public class TextConverter extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 imageUri = data.getData();
 
-//                Toast.makeText(this, "Image selected", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this,                                                                               "Image selected", Toast.LENGTH_LONG).show();
 
                 recognizeText();
 //            } else {
