@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,15 +16,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityTextConverterBinding;
+import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.FileAdapter;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -41,14 +42,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class TextConverter extends AppCompatActivity {
+public class TextConverter extends AppCompatActivity implements ItemClickListener{
     ActivityTextConverterBinding binding;
     ImageView camera,gallery;
     EditText recgText;
-    TextRecognizer textRecognizer;
-    Uri imageUri;
 
-    private ArrayList<FileItem> fileList;
+    TextView actionCancel, actionSave;
+    TextRecognizer textRecognizer;
+    ArrayList<FileItem> folderList;
+    FileAdapter fileAdapter;
+    Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,11 @@ public class TextConverter extends AppCompatActivity {
 
         camera = binding.btnCamera;
         gallery = binding.btnImportGallery;
+
+        actionSave = binding.actionSave;
+        actionSave.setVisibility(View.INVISIBLE);
+        actionCancel = binding.actionCancel;
+        actionCancel.setVisibility(View.INVISIBLE);
 
         recgText = binding.recordText;
 
@@ -83,9 +91,17 @@ public class TextConverter extends AppCompatActivity {
                         .start();	//Default Request Code is ImagePicker.REQUEST_CODE
             }
         });
-        fileList = new ArrayList<>();
+        addClickListener();
+    }
 
-        showExistingFiles();
+    private void addClickListener() {
+        actionSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "aaa", Toast.LENGTH_SHORT).show();
+                showAddFolderDialog();
+            }
+        });
     }
 
     @Override
@@ -97,8 +113,10 @@ public class TextConverter extends AppCompatActivity {
                 imageUri = data.getData();
 
                 Toast.makeText(this, "Image selected", Toast.LENGTH_LONG).show();
-
                 recognizeText();
+
+                actionSave.setVisibility(View.VISIBLE);
+                actionCancel.setVisibility(View.VISIBLE);
 //            } else {
                 Toast.makeText(this, "Image not selected", Toast.LENGTH_LONG).show();
             }
@@ -130,39 +148,8 @@ public class TextConverter extends AppCompatActivity {
             }
         }
     }
-
-    private void showAddFileDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);
-        LayoutInflater inflater = LayoutInflater.from(TextConverter.this);
-        View dialogView = inflater.inflate(R.layout.dialog_add_file, null);
-        dialogBuilder.setView(dialogView);
-
-        final EditText editText = dialogView.findViewById(R.id.editTextFileName);
-        Button btnSave = dialogView.findViewById(R.id.btnSave);
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-
-        final AlertDialog alertDialog = dialogBuilder.create();
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String fileName = editText.getText().toString().trim();
-                if (!fileName.isEmpty()) {
-                    alertDialog.dismiss();
-                } else {
-                    Toast.makeText(TextConverter.this, "Please enter file name", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
-        alertDialog.show();
-    }
     private void showExistingFiles() {
+        folderList = new ArrayList<>();
         File[] files = TextConverter.this.getFilesDir().listFiles();
         if (files != null) {
             for (File file : files) {
@@ -172,9 +159,38 @@ public class TextConverter extends AppCompatActivity {
                     fileItem.setIcon(R.drawable.icon_image_to_text);
                     fileItem.setStatus("0 file");
 
-                    fileList.add(fileItem);
+                    folderList.add(fileItem);
                 }
             }
         }
+    }
+
+    private void showAddFolderDialog() {
+        // Tạo AlertDialog
+        PickFolderLayoutBinding pickFolderLayoutBinding = PickFolderLayoutBinding.inflate(getLayoutInflater());
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setView(pickFolderLayoutBinding.getRoot());
+
+        showExistingFiles();
+
+        fileAdapter = new FileAdapter(folderList, getApplicationContext());
+        Log.i("folder_count", ""+folderList.size());
+        fileAdapter.setClickListener(this);
+
+        RecyclerView recyclerView = pickFolderLayoutBinding.recyclerView2;
+        pickFolderLayoutBinding.recyclerView2.setAdapter(fileAdapter);
+        pickFolderLayoutBinding.recyclerView2.setLayoutManager(new LinearLayoutManager(this));
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void onSettingItemClick(View v, int pos) {
+
+    }
+
+    @Override
+    public void onFileItemClick(View v, int pos) {
+
     }
 }
