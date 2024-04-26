@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -50,7 +51,7 @@ public class TextConverter extends AppCompatActivity {
 
         getImage = binding.btnCamera;
 
-        recgText = binding.recgText;
+        recgText = binding.recordText;
 
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
@@ -95,6 +96,7 @@ public class TextConverter extends AppCompatActivity {
                             public void onSuccess(Text text) {
 
                                 String recognizeText = text.getText();
+                                Log.i("Output", recognizeText);
                                 recgText.setText(recognizeText);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
