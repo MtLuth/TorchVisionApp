@@ -63,6 +63,7 @@ public class TextConverter extends AppCompatActivity {
         getImage = binding.btnCamera;
 
         recgText = binding.recordText;
+        saveFile = binding.btnsaveFile;
 
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
@@ -88,12 +89,7 @@ public class TextConverter extends AppCompatActivity {
             }
         });
 
-        saveFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
 
     }
 
