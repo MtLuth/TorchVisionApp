@@ -43,7 +43,7 @@ import java.util.ArrayList;
 
 public class TextConverter extends AppCompatActivity {
     ActivityTextConverterBinding binding;
-    ImageView saveFile, getImage, copy;
+    ImageView camera,gallery;
     EditText recgText;
     TextRecognizer textRecognizer;
     Uri imageUri;
@@ -60,37 +60,32 @@ public class TextConverter extends AppCompatActivity {
                 R.layout.activity_text_converter
         );
 
-        getImage = binding.btnCamera;
+        camera = binding.btnCamera;
+        gallery = binding.btnImportGallery;
 
         recgText = binding.recordText;
-        saveFile = binding.btnsaveFile;
 
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
-        getImage.setOnClickListener(new View.OnClickListener() {
+        camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ImagePicker.with(TextConverter.this)
-                        .crop()	    			//Crop image(Optional), Check Customization for more option
-                        .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                        .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-                        .start();
+                        .cameraOnly()	//User can only select image from Gallery
+                        .start();	//Default Request Code is ImagePicker.REQUEST_CODE
             }
         });
-
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImagePicker.with(TextConverter.this)
+                        .galleryOnly()	//User can only select image from Gallery
+                        .start();	//Default Request Code is ImagePicker.REQUEST_CODE
+            }
+        });
         fileList = new ArrayList<>();
 
         showExistingFiles();
-
-        saveFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddFileDialog();
-            }
-        });
-
-
-
     }
 
     @Override
