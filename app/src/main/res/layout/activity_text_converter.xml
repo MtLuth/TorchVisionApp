@@ -17,7 +17,7 @@
             app:layout_constraintVertical_bias="0.423">
 
             <EditText
-                android:id="@+id/recgText"
+                android:id="@+id/recordText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@null"

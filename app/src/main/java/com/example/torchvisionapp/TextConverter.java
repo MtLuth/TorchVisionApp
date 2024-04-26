@@ -1,7 +1,10 @@
 package com.example.torchvisionapp;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -11,12 +14,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityTextConverterBinding;
+import com.example.torchvisionapp.model.FileItem;
+import com.example.torchvisionapp.view.FileAdapter;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,6 +36,7 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class TextConverter extends AppCompatActivity {
@@ -38,6 +45,9 @@ public class TextConverter extends AppCompatActivity {
     EditText recgText;
     TextRecognizer textRecognizer;
     Uri imageUri;
+
+    private ArrayList<FileItem> fileList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +75,24 @@ public class TextConverter extends AppCompatActivity {
             }
         });
 
+        fileList = new ArrayList<>();
+
+        showExistingFiles();
+
+        saveFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddFileDialog();
+            }
+        });
+
+        saveFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     @Override
@@ -75,11 +103,11 @@ public class TextConverter extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 imageUri = data.getData();
 
-//                Toast.makeText(this, "Image selected", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Image selected", Toast.LENGTH_LONG).show();
 
                 recognizeText();
 //            } else {
-//                Toast.makeText(this, "Image not selected", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Image not selected", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -95,6 +123,7 @@ public class TextConverter extends AppCompatActivity {
                             public void onSuccess(Text text) {
 
                                 String recognizeText = text.getText();
+                                Log.i("Output", recognizeText);
                                 recgText.setText(recognizeText);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -105,6 +134,53 @@ public class TextConverter extends AppCompatActivity {
                         });
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void showAddFileDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);
+        LayoutInflater inflater = LayoutInflater.from(TextConverter.this);
+        View dialogView = inflater.inflate(R.layout.dialog_add_file, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText editText = dialogView.findViewById(R.id.editTextFileName);
+        Button btnSave = dialogView.findViewById(R.id.btnSave);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String fileName = editText.getText().toString().trim();
+                if (!fileName.isEmpty()) {
+                    alertDialog.dismiss();
+                } else {
+                    Toast.makeText(TextConverter.this, "Please enter file name", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+    private void showExistingFiles() {
+        File[] files = TextConverter.this.getFilesDir().listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    FileItem fileItem = new FileItem();
+                    fileItem.setName(file.getName());
+                    fileItem.setIcon(R.drawable.icon_image_to_text);
+                    fileItem.setStatus("0 file");
+
+                    fileList.add(fileItem);
+                }
             }
         }
     }
