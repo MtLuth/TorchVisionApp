@@ -78,5 +78,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation("com.github.dhaval2404:imagepicker:2.1")
-    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
+    implementation("com.google.mlkit:text-recognition:16.0.0")
 }
