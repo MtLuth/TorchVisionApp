@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityTextConverterBinding;
 import com.example.torchvisionapp.model.FileItem;
+import com.example.torchvisionapp.view.FileAdapter;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -79,7 +80,14 @@ public class TextConverter extends AppCompatActivity {
 
         fileList = new ArrayList<>();
 
-        showAddFieDialog();
+        showExistingFiles();
+
+        saveFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddFileDialog();
+            }
+        });
 
         saveFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,14 +140,13 @@ public class TextConverter extends AppCompatActivity {
         }
     }
 
-    private void showAddFieDialog() {
-        // Tạo AlertDialog
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
+    private void showAddFileDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);
+        LayoutInflater inflater = LayoutInflater.from(TextConverter.this);
         View dialogView = inflater.inflate(R.layout.dialog_add_file, null);
         dialogBuilder.setView(dialogView);
 
-        final EditText editTextFileName = dialogView.findViewById(R.id.editTextFileName);
+        final EditText editText = dialogView.findViewById(R.id.editTextFileName);
         Button btnSave = dialogView.findViewById(R.id.btnSave);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
@@ -147,16 +154,14 @@ public class TextConverter extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String fileName = editTextFileName.getText().toString().trim();
+                String fileName = editText.getText().toString().trim();
                 if (!fileName.isEmpty()) {
-                    createFile(fileName);
                     alertDialog.dismiss();
                 } else {
-                    Toast.makeText(requireContext(), "Please enter file name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TextConverter.this, "Please enter file name", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,30 +171,14 @@ public class TextConverter extends AppCompatActivity {
         });
         alertDialog.show();
     }
-
-    private void createFile(String filename) {
-        File folder = new File(requireContext().getFilesDir(), filename);
-        if (!folder.exists()) {
-            if (folder.mkdir()) {
-                fileList.add(new FileItem(R.drawable.iconfolder_actived, filename, "0 files"));
-                folderAdapter.notifyDataSetChanged();
-                Toast.makeText(requireContext(), "Folder created successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(requireContext(), "Failed to create folder", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(requireContext(), "Folder already exists", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void showExistingFolders() {
-        File[] files = requireContext().getFilesDir().listFiles();
+    private void showExistingFiles() {
+        File[] files = TextConverter.this.getFilesDir().listFiles();
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
                     FileItem fileItem = new FileItem();
                     fileItem.setName(file.getName());
-                    fileItem.setIcon(R.drawable.iconfolder_actived);
+                    fileItem.setIcon(R.drawable.icon_image_to_text);
                     fileItem.setStatus("0 file");
 
                     fileList.add(fileItem);

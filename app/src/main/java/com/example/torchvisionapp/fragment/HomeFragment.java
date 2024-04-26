@@ -123,6 +123,7 @@ public class HomeFragment extends Fragment{
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getContext(),"Test", Toast.LENGTH_SHORT).show();
                 String folderName = editTextFolderName.getText().toString().trim();
                 if (!folderName.isEmpty()) {
                     createFolder(folderName);
