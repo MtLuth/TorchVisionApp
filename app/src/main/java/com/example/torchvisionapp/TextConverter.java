@@ -173,7 +173,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
 
         showExistingFiles();
 
-        fileAdapter = new FileAdapter(folderList, getApplicationContext());
+        fileAdapter = new FileAdapter(folderList, this);
         Log.i("folder_count", ""+folderList.size());
         fileAdapter.setClickListener(this);
 
