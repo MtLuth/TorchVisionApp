@@ -24,31 +24,47 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.torchvisionapp.ItemClickListener;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
+import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.FragmentHomeBinding;
+import com.google.android.gms.dynamic.SupportFragmentWrapper;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment{
+public class HomeFragment extends Fragment implements ItemClickListener {
     ImageView btnCamera, btnAddFolder;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ImageView folderImageView;
-
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView, recyclerViewPickFolder;
     private FileAdapter folderAdapter;
     private ArrayList<FileItem> folderList;
+    PickFolderLayoutBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Khởi tạo ActivityResultLauncher để start CameraActivity
+        binding = PickFolderLayoutBinding.inflate(getLayoutInflater());
+
+        folderList = showExistingFolders();
+        folderAdapter = new FileAdapter(folderList, getContext());
+        folderAdapter.setClickListener(this);
+
+        for (FileItem i: folderList
+             ) {
+            Log.i("item1", i.getName());
+        }
+
+        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
+        pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
+
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -94,13 +110,10 @@ public class HomeFragment extends Fragment{
             }
         });
 
+        //show folder in HomePage
         recyclerView = binding.recyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        folderList = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        showExistingFolders();
-
-        folderAdapter = new FileAdapter(folderList, getContext());
         recyclerView.setAdapter(folderAdapter);
 
         return view;
@@ -159,8 +172,9 @@ public class HomeFragment extends Fragment{
         }
     }
 
-    private void showExistingFolders() {
+    private ArrayList<FileItem> showExistingFolders() {
         File[] files = requireContext().getFilesDir().listFiles();
+        ArrayList<FileItem> fileItems = new ArrayList<>();
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory()) {
@@ -169,9 +183,20 @@ public class HomeFragment extends Fragment{
                     fileItem.setIcon(R.drawable.iconfolder_actived);
                     fileItem.setStatus("0 file");
 
-                    folderList.add(fileItem);
+                    fileItems.add(fileItem);
                 }
             }
         }
+        return fileItems;
+    }
+
+    @Override
+    public void onSettingItemClick(View v, int pos) {
+
+    }
+
+    @Override
+    public void onFileItemClick(View v, int pos) {
+        Toast.makeText(getContext(), ""+folderList.get(pos).getName(), Toast.LENGTH_SHORT).show();
     }
 }
