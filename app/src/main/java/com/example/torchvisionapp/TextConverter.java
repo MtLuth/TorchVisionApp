@@ -166,22 +166,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     }
 
     private void showAddFolderDialog() {
-        // Tạo AlertDialog
-        PickFolderLayoutBinding pickFolderLayoutBinding = PickFolderLayoutBinding.inflate(getLayoutInflater());
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setView(pickFolderLayoutBinding.getRoot());
 
-        showExistingFiles();
-
-        fileAdapter = new FileAdapter(folderList, this);
-        Log.i("folder_count", ""+folderList.size());
-        fileAdapter.setClickListener(this);
-
-        RecyclerView recyclerView = pickFolderLayoutBinding.recyclerView2;
-        pickFolderLayoutBinding.recyclerView2.setAdapter(fileAdapter);
-        pickFolderLayoutBinding.recyclerView2.setLayoutManager(new LinearLayoutManager(this));
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
     }
 
     @Override

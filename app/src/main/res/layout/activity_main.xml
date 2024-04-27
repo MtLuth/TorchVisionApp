@@ -16,7 +16,6 @@
             android:layout_height="52dp"
             android:layout_marginTop="640dp"
             android:background="@drawable/button_custom"
-            android:clickable="true"
             android:drawableEnd="@drawable/arrow_right_s_light"
             android:paddingStart="80dp"
             android:paddingEnd="45dp"
@@ -31,7 +30,7 @@
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
-            android:layout_width="0dp"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
             android:layout_marginTop="100dp"
             android:layout_marginBottom="150dp"
