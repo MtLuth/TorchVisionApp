@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.torchvisionapp.R;
-import com.example.torchvisionapp.databinding.SettingItemBinding;
 import com.example.torchvisionapp.model.SettingItem;
 
 import java.util.ArrayList;

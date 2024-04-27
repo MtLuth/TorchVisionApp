@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.R;
@@ -110,19 +111,19 @@ public class HomeFragment extends Fragment{
     }
     private void showAddFolderDialog() {
         // Tạo AlertDialog
+        DialogAddFolderBinding dialogAddFolderBinding = DialogAddFolderBinding.inflate(getLayoutInflater());
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(requireContext());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_folder, null);
-        dialogBuilder.setView(dialogView);
+        dialogBuilder.setView(dialogAddFolderBinding.getRoot());
 
-        final EditText editTextFolderName = dialogView.findViewById(R.id.editTextFolderName);
-        Button btnSave = dialogView.findViewById(R.id.btnSave);
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+        final EditText editTextFolderName = dialogAddFolderBinding.editTextFolderName;
+        Button btnSave = dialogAddFolderBinding.btnSave;
+        Button btnCancel = dialogAddFolderBinding.btnCancel;
 
         final AlertDialog alertDialog = dialogBuilder.create();
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getContext(),"Test", Toast.LENGTH_SHORT).show();
                 String folderName = editTextFolderName.getText().toString().trim();
                 if (!folderName.isEmpty()) {
                     createFolder(folderName);
