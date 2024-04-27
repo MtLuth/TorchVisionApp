@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -14,9 +16,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.CustomAdapter;
@@ -29,13 +28,11 @@ public class PickFolderDialogFragment extends DialogFragment {
     ArrayList<FileItem> listFolder;
     FileAdapter myAdapter;
     ListView listView;
+    CustomAdapter adapter;
+    String selectedFolderName = "";
     public PickFolderDialogFragment(ArrayList<FileItem> listFolder, FileAdapter fileAdapter) {
         this.listFolder = listFolder;
         this.myAdapter = fileAdapter;
-    }
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @NonNull
@@ -44,13 +41,36 @@ public class PickFolderDialogFragment extends DialogFragment {
         PickFolderLayoutBinding binding = PickFolderLayoutBinding.inflate(getLayoutInflater());
         listView = binding.listView;
 
-        CustomAdapter adapter = new CustomAdapter(listFolder, getContext());
+        adapter = new CustomAdapter(getContext(), listFolder);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedFolderName = listFolder.get(position).getName();
+                Log.i("folder", selectedFolderName);
+            }
+        });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(binding.getRoot());
-        Toast.makeText(getContext(), ""+listFolder.size(), Toast.LENGTH_SHORT).show();
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (selectedFolderName == ""){
+                    Toast.makeText(getContext(), "save to root", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    //save
+                    Toast.makeText(getContext(), selectedFolderName, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         return builder.create();
     }
-
 }
