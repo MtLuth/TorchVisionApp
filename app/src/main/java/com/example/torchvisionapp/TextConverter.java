@@ -171,7 +171,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         }
     }
     public void ChoicesFormatFile(){
-        String[] choices = {"docx", "pdf"};
+        String[] choices = {"docx", "pdf", "txt"};
         AlertDialog.Builder builder = new AlertDialog.Builder(TextConverter.this);
         builder
                 .setTitle("Choice format file")
