@@ -24,6 +24,8 @@ public class DocumentFile {
             directory.mkdirs();
         }
         File file = new File(directory, fileName + "." + format);
+        file.setReadable(true);
+        file.setWritable(true);
         Toast.makeText(context, "" + fileName + "." + format, Toast.LENGTH_SHORT).show();
 
         if (file.exists()) {
@@ -40,7 +42,7 @@ public class DocumentFile {
             writer.flush();
             writer.close();
 
-            Toast.makeText(context, "File saved successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "File saved successfully "+path, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
 
             e.printStackTrace();
