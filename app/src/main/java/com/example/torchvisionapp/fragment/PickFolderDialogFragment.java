@@ -30,9 +30,8 @@ public class PickFolderDialogFragment extends DialogFragment {
     ListView listView;
     CustomAdapter adapter;
     String selectedFolderName = "";
-    public PickFolderDialogFragment(ArrayList<FileItem> listFolder, FileAdapter fileAdapter) {
+    public PickFolderDialogFragment(ArrayList<FileItem> listFolder) {
         this.listFolder = listFolder;
-        this.myAdapter = fileAdapter;
     }
 
     @NonNull

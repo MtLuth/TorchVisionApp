@@ -29,6 +29,7 @@ import com.example.torchvisionapp.TranslateActivity;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
+import com.example.torchvisionapp.model.MyKotlin;
 import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
@@ -54,13 +55,12 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         super.onCreate(savedInstanceState);
 
         binding = PickFolderLayoutBinding.inflate(getLayoutInflater());
+        MyKotlin myKotlin = new MyKotlin();
+        Log.i("Kotlin", myKotlin.test());
 
         folderList = showExistingFolders();
         folderAdapter = new FileAdapter(folderList, getContext());
         folderAdapter.setClickListener(this);
-
-        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
-        pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
 
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -167,7 +167,13 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         File folder = new File(requireContext().getFilesDir(), folderName);
         if (!folder.exists()) {
             if (folder.mkdir()) {
-                folderList.add(new FileItem(R.drawable.iconfolder_actived, folderName, "0 files"));
+                FileItem fileItem = new FileItem();
+                fileItem.setName(folderName);
+                fileItem.setIcon(R.drawable.iconfolder_actived);
+                fileItem.setPath(folder.getPath());
+                fileItem.setType("directory");
+                fileItem.setStatus("0 files");
+                folderList.add(fileItem);
                 folderAdapter.notifyDataSetChanged();
                 Toast.makeText(requireContext(), "Folder created successfully", Toast.LENGTH_SHORT).show();
             } else {
@@ -181,7 +187,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     private ArrayList<FileItem> showExistingFolders() {
         String path = requireContext().getFilesDir().getPath();
         ArrayList<FileItem> fileItems = new ArrayList<>();
-        FileExplorer explorer = new FileExplorer(getContext());
+        FileExplorer explorer = new FileExplorer();
         ArrayList<File> folderList = explorer.loadExistingFolderFromPath(path);
         Log.i("path", path);
         if (folderList != null) {

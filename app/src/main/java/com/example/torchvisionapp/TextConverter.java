@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,8 +25,11 @@ import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityTextConverterBinding;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
+import com.example.torchvisionapp.fragment.PickFolderDialogFragment;
 import com.example.torchvisionapp.model.FileItem;
+import com.example.torchvisionapp.view.CustomAdapter;
 import com.example.torchvisionapp.view.FileAdapter;
+import com.example.torchvisionapp.viewmodel.TextConverterViewModel;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,30 +44,38 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class TextConverter extends AppCompatActivity implements ItemClickListener{
     ActivityTextConverterBinding binding;
     ImageView camera,gallery;
     EditText recgText;
-
+    ArrayList<FileItem> listFolder;
     TextView actionCancel, actionSave;
     TextRecognizer textRecognizer;
     Uri imageUri;
+    TextConverterViewModel viewModel;
+    CustomAdapter folderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_converter);
+        //Init ViewModel
+        viewModel = new ViewModelProvider(this).get(TextConverterViewModel.class);
 
+        //DataBinding
         binding = DataBindingUtil.setContentView(
                 this,
                 R.layout.activity_text_converter
         );
 
+        //binding btn
         camera = binding.btnCamera;
         gallery = binding.btnImportGallery;
 
+        //Set Invisible
         actionSave = binding.actionSave;
         actionSave.setVisibility(View.INVISIBLE);
         actionCancel = binding.actionCancel;
@@ -72,6 +84,11 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         recgText = binding.recordText;
 
         textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+        //Prepare Data
+        String path = getApplicationContext().getFilesDir().getPath();
+        listFolder = viewModel.loadFolderList(new File(path));
+        folderAdapter = new CustomAdapter(this, listFolder);
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +172,8 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     }
 
     private void showAddFolderDialog() {
-
+        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(listFolder);
+        pickFolderDialogFragment.show(this.getSupportFragmentManager(), "pick folder");
     }
 
     @Override

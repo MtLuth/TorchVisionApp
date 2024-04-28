@@ -8,12 +8,6 @@ import java.util.ArrayList;
 
 public class FileExplorer {
 
-    Context context;
-
-    public FileExplorer(Context context) {
-        this.context =  context;
-    }
-
     public ArrayList<File> loadExistingFolderFromPath(String filePath) {
         ArrayList<File> folderList = new ArrayList<>();
         try {
