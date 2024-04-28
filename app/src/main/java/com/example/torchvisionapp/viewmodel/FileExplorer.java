@@ -16,7 +16,6 @@ public class FileExplorer {
 
     public ArrayList<File> loadExistingFolderFromPath(String filePath) {
         ArrayList<File> folderList = new ArrayList<>();
-        try {
             File directory = new File(filePath);
             if (directory.exists() && directory.isDirectory()) {
                 Log.i("directory", "complete");
@@ -29,9 +28,6 @@ public class FileExplorer {
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return folderList;
     }
     public int countNumberOfFileInDirectory(String path) {

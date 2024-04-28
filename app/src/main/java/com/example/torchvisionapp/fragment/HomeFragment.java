@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         folderAdapter = new FileAdapter(folderList, getContext());
         folderAdapter.setClickListener(this);
 
-        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
+        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList);
         pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
 
         image_to_textLaucher = registerForActivityResult(
@@ -192,6 +192,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
                     FileItem fileItem = new FileItem();
                     fileItem.setName(file.getName());
                     fileItem.setIcon(R.drawable.iconfolder_actived);
+                    fileItem.setPath(file.getPath());
                     int count = explorer.countNumberOfFileInDirectory(file.getPath());
                     fileItem.setStatus(count+" files");
 

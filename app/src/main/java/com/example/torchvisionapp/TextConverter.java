@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,9 +31,11 @@ import com.example.torchvisionapp.databinding.DialogAddFileBinding;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.fragment.PickFolderDialogFragment;
+import com.example.torchvisionapp.model.DocumentFile;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.viewmodel.FileExplorer;
+import com.example.torchvisionapp.viewmodel.LoadExistingFileViewModel;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,11 +62,14 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     TextView actionCancel, actionSave;
     TextRecognizer textRecognizer;
     Uri imageUri;
+    LoadExistingFileViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_converter);
+
+        viewModel = new ViewModelProvider(this).get(LoadExistingFileViewModel.class);
 
         binding = DataBindingUtil.setContentView(
                 this,
@@ -100,7 +106,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         });
         addClickListener();
 
-        folderList = showExistingFolders();
+        folderList = viewModel.loadExistingFolder(this.getFilesDir().getPath());
         folderAdapter = new FileAdapter(folderList, this);
         folderAdapter.setClickListener(this);
     }
@@ -109,11 +115,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         actionSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
-//                pickFolderDialogFragment.show(getSupportFragmentManager(), "dialog_tag");
-
-                ChoicesFormatFile();
+                saveFile();
             }
         });
 
@@ -244,36 +246,9 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         alertDialog.show();
     }
     private void saveAsFile(String fileName, String format) {
-        if (fileName.isEmpty() || format.isEmpty()) {
-            Toast.makeText(TextConverter.this, "Please enter file name and format", Toast.LENGTH_SHORT).show();
-        }
+        DocumentFile docs = new DocumentFile(getApplicationContext());
         File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        File file = new File(directory, fileName + "." + format);
-        Toast.makeText(TextConverter.this, "" + fileName + "." + format, Toast.LENGTH_SHORT).show();
-
-        if (file.exists()) {
-            Toast.makeText(TextConverter.this, "File already exists", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String textToWrite = recgText.getText().toString();
-
-        try {
-            FileWriter writer = new FileWriter(file);
-
-            writer.write(textToWrite);
-            writer.flush();
-            writer.close();
-
-            Toast.makeText(TextConverter.this, "File saved successfully", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-            Toast.makeText(TextConverter.this, "Error saving file", Toast.LENGTH_SHORT).show();
-        }
+        docs.saveAsFile(recgText.getText().toString(), fileName, format, directory.getPath());
     }
     @Override
     public void onSettingItemClick(View v, int pos) {
@@ -284,5 +259,12 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     public void onFileItemClick(View v, int pos) {
 
     }
+
+    private void saveFile() {
+        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList);
+        pickFolderDialogFragment.show(getSupportFragmentManager(), "dialog_tag");
+        ChoicesFormatFile();
+    }
+
 
 }

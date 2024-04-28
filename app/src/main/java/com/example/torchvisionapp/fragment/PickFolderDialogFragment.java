@@ -26,13 +26,11 @@ import java.util.ArrayList;
 
 public class PickFolderDialogFragment extends DialogFragment {
     ArrayList<FileItem> listFolder;
-    FileAdapter myAdapter;
     ListView listView;
     CustomAdapter adapter;
     String selectedFolderName = "";
-    public PickFolderDialogFragment(ArrayList<FileItem> listFolder, FileAdapter fileAdapter) {
+    public PickFolderDialogFragment(ArrayList<FileItem> listFolder) {
         this.listFolder = listFolder;
-        this.myAdapter = fileAdapter;
     }
 
     @NonNull
@@ -46,7 +44,7 @@ public class PickFolderDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedFolderName = listFolder.get(position).getName();
+                selectedFolderName = listFolder.get(position).getPath();
                 Log.i("folder", selectedFolderName);
             }
         });
