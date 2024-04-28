@@ -49,8 +49,6 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
 
     TextView actionCancel, actionSave;
     TextRecognizer textRecognizer;
-    ArrayList<FileItem> folderList;
-    FileAdapter fileAdapter;
     Uri imageUri;
 
     @Override
@@ -102,6 +100,13 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
                 showAddFolderDialog();
             }
         });
+
+        actionCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -148,40 +153,9 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             }
         }
     }
-    private void showExistingFiles() {
-        folderList = new ArrayList<>();
-        File[] files = TextConverter.this.getFilesDir().listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    FileItem fileItem = new FileItem();
-                    fileItem.setName(file.getName());
-                    fileItem.setIcon(R.drawable.icon_image_to_text);
-                    fileItem.setStatus("0 file");
-
-                    folderList.add(fileItem);
-                }
-            }
-        }
-    }
 
     private void showAddFolderDialog() {
-        // Tạo AlertDialog
-        PickFolderLayoutBinding pickFolderLayoutBinding = PickFolderLayoutBinding.inflate(getLayoutInflater());
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        dialogBuilder.setView(pickFolderLayoutBinding.getRoot());
 
-        showExistingFiles();
-
-        fileAdapter = new FileAdapter(folderList, getApplicationContext());
-        Log.i("folder_count", ""+folderList.size());
-        fileAdapter.setClickListener(this);
-
-        RecyclerView recyclerView = pickFolderLayoutBinding.recyclerView2;
-        pickFolderLayoutBinding.recyclerView2.setAdapter(fileAdapter);
-        pickFolderLayoutBinding.recyclerView2.setLayoutManager(new LinearLayoutManager(this));
-        final AlertDialog alertDialog = dialogBuilder.create();
-        alertDialog.show();
     }
 
     @Override

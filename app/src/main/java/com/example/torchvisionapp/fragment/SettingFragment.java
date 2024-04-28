@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.torchvisionapp.AboutUs;
+import com.example.torchvisionapp.ContactUs;
 import com.example.torchvisionapp.ItemClickListener;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.SignInActivity;
@@ -88,6 +89,10 @@ public class SettingFragment extends Fragment implements ItemClickListener {
         }
         if (pos==1) {
             Intent i = new Intent(v.getContext(), AboutUs.class);
+            startActivity(i);
+        }
+        if(pos==2){
+            Intent i = new Intent(v.getContext(), ContactUs.class);
             startActivity(i);
         }
     }

@@ -22,13 +22,19 @@
         android:theme="@style/Theme.TorchVisionApp"
         tools:targetApi="31">
         <activity
+            android:name=".TranslateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ContactUs"
+            android:exported="false" />
+        <activity
             android:name=".AboutUs"
             android:exported="false" />
         <activity
             android:name=".TextConverter"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".MainScreenAppActivity"
             android:exported="false" />
         <activity
             android:name=".SignInActivity"
@@ -45,7 +51,7 @@
             android:label="@string/title_activity_sign_up"
             android:theme="@style/Theme.TorchVisionApp" />
         <activity
-            android:name=".MainScreenAppActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
