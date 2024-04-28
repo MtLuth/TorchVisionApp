@@ -98,22 +98,22 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "aaa", Toast.LENGTH_SHORT).show();
                 showAddFolderDialog();
-//                String[] choices = {"docx", "pdf"};
-//                AlertDialog.Builder builder = AlertDialog.Builder(TextConverter.this);
-//                builder
-//                        .setTitle("Choice format file")
-//                        .setPositiveButton("Save", (dialog, which) -> {
-//
-//                        })
-//                        .setNegativeButton("Cancel", (dialog, which) -> {
-//
-//                        })
-//                        .setSingleChoiceItems(choices, 0, (dialog, which) -> {
-//
-//                        });
-//
-//                AlertDialog dialog = builder.create();
-//                dialog.show();
+                String[] choices = {"docx", "pdf"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(TextConverter.this);
+                builder
+                        .setTitle("Choice format file")
+                        .setPositiveButton("Save", (dialog, which) -> {
+                            
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> {
+
+                        })
+                        .setSingleChoiceItems(choices, 0, (dialog, which) -> {
+
+                        });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -138,7 +138,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
 
                 actionSave.setVisibility(View.VISIBLE);
                 actionCancel.setVisibility(View.VISIBLE);
-//            } else {
+            } else {
                 Toast.makeText(this, "Image not selected", Toast.LENGTH_LONG).show();
             }
         }
