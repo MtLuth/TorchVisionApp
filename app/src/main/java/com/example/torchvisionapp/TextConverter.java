@@ -61,8 +61,8 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
                 R.layout.activity_text_converter
         );
 
-        camera = binding.btnCamera;
-        gallery = binding.btnImportGallery;
+        camera = null;
+        gallery = null;
 
         actionSave = binding.actionSave;
         actionSave.setVisibility(View.INVISIBLE);

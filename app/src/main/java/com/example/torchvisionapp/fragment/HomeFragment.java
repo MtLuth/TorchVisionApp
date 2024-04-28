@@ -29,6 +29,7 @@ import com.example.torchvisionapp.TranslateActivity;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
+import com.example.torchvisionapp.ocr.OCRActivity;
 import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
@@ -125,7 +126,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         return view;
     }
     private void openCameraActivity() {
-        Intent intent = new Intent(requireContext(), TextConverter.class);
+        Intent intent = new Intent(requireContext(), OCRActivity.class);
         cameraLauncher.launch(intent);
     }
     private void showAddFolderDialog() {
