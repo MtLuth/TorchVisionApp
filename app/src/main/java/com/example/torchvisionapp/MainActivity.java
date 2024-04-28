@@ -5,8 +5,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,6 +18,11 @@ import com.example.torchvisionapp.model.Onboarding;
 import com.example.torchvisionapp.view.OnboardingAdapter;
 import com.example.torchvisionapp.viewmodel.MainActivityViewModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -73,4 +80,5 @@ public class MainActivity extends AppCompatActivity {
     private int getItem() {
        return viewPager.getCurrentItem();
     }
+
 }

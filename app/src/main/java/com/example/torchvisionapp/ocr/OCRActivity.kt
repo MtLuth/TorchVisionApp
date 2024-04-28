@@ -118,7 +118,9 @@ public class OCRActivity : AppCompatActivity() {
         mButton = findViewById(R.id.btnTranslate)
 
         mButton.setOnClickListener {
-            translate(fransText.toString())
+            val result = translate(fransText!!.text.toString())
+            showTranslationResult(result)
+            mButton.isEnabled = true
         }
 
         val buttonPickImage: Button = findViewById(R.id.button_pick_image)
@@ -395,10 +397,10 @@ public class OCRActivity : AppCompatActivity() {
 
         for ((word) in reversedItems) {
             Log.d("Recognition result:", word)
-            resultString += "$word, "
+            resultString += "$word "
         }
 
-        fransText.setText(resultString)
+        fransText.text = resultString
         Log.d("OCR", modelExecutionResult.itemsFound.toString())
 
         enableControls(true)
@@ -410,6 +412,8 @@ public class OCRActivity : AppCompatActivity() {
 
     //    handle machine translate
 //    func to get model file
+//    @Throws(IOException::class)
+    //    func to get model file
     @Throws(IOException::class)
     private fun assetFilePath(context: Context, assetName: String): String? {
         val file = File(context.filesDir, assetName)
@@ -432,7 +436,7 @@ public class OCRActivity : AppCompatActivity() {
 
     //    func to display result
     private fun showTranslationResult(result: String?) {
-        engText.setText(result)
+        engText.text = result
     }
 
     fun run() {
@@ -447,11 +451,7 @@ public class OCRActivity : AppCompatActivity() {
     private fun translate(text: String): String? {
         if (mModuleEncoder == null) {
             try {
-                mModuleEncoder = LiteModuleLoader.load(
-                    assetFilePath(
-                        applicationContext, "models/machine_translate/optimized_encoder_150k.ptl"
-                    )
-                )
+                mModuleEncoder = LiteModuleLoader.load(assetFilePath(applicationContext, "optimized_encoder_150k.ptl"));
             } catch (e: IOException) {
                 Log.e("TAG", "Error reading assets", e)
                 finish()
@@ -461,14 +461,14 @@ public class OCRActivity : AppCompatActivity() {
         val wrd2idx: JSONObject
         val idx2wrd: JSONObject
         try {
-            var `is` = assets.open("models/machine_translate/target_idx2wrd.json")
+            var `is` = assets.open("target_idx2wrd.json");
             var size = `is`.available()
             var buffer = ByteArray(size)
             `is`.read(buffer)
             `is`.close()
             json = String(buffer, charset("UTF-8"))
             idx2wrd = JSONObject(json)
-            `is` = assets.open("models/machine_translate/source_wrd2idx.json")
+            `is` = assets.open("source_wrd2idx.json");
             size = `is`.available()
             buffer = ByteArray(size)
             `is`.read(buffer)
@@ -523,11 +523,7 @@ public class OCRActivity : AppCompatActivity() {
         val decoderInputShape = longArrayOf(1, 1)
         if (mModuleDecoder == null) {
             try {
-                mModuleDecoder = LiteModuleLoader.load(
-                    assetFilePath(
-                        applicationContext, "models/machine_translate/optimized_decoder_150k.ptl"
-                    )
-                )
+                mModuleDecoder = LiteModuleLoader.load(assetFilePath(applicationContext, "optimized_decoder_150k.ptl"));
             } catch (e: IOException) {
                 Log.e("machine_translation", "Error reading assets", e)
                 finish()
@@ -575,6 +571,7 @@ public class OCRActivity : AppCompatActivity() {
         } catch (e: JSONException) {
             Log.e("machine_translation", "JSONException ", e)
         }
+        Log.d("Trans", english)
         return english
     }
 

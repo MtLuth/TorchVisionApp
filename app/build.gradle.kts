@@ -6,7 +6,12 @@ plugins {
 android {
     namespace = "com.example.torchvisionapp"
     compileSdk = 34
-
+    packagingOptions {
+        pickFirst("lib/x86/libc++_shared.so")
+        pickFirst("lib/x86_64/libc++_shared.so")
+        pickFirst("lib/armeabi-v7a/libc++_shared.so")
+        pickFirst("lib/arm64-v8a/libc++_shared.so")
+    }
     defaultConfig {
         applicationId = "com.example.torchvisionapp"
         minSdk = 24
@@ -50,6 +55,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -97,6 +103,6 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.11.0")
 
     // dependencies for machine translate
-    implementation("org.pytorch:pytorch_android_lite:1.10.0")
+    implementation("org.pytorch:pytorch_android_lite:+")
 
 }

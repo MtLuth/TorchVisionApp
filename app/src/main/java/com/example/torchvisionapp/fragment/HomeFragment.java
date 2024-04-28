@@ -60,8 +60,8 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         folderAdapter = new FileAdapter(folderList, getContext());
         folderAdapter.setClickListener(this);
 
-        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
-        pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
+//        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
+//        pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
 
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
