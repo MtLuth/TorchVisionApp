@@ -170,28 +170,6 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             }
         }
     }
-    public void ChoicesFormatFile(){
-        String[] choices = {"docx", "pdf", "txt"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(TextConverter.this);
-        builder
-                .setTitle("Choice format file")
-                .setPositiveButton("Save", (dialog, which) -> {
-                    int selectedFormatIndex = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                    String selectedFormat = choices[selectedFormatIndex];
-
-                    Toast.makeText(this,"" + selectedFormat, Toast.LENGTH_SHORT).show();
-                    showAddFileDialog(selectedFormat, path);
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> {
-
-                })
-                .setSingleChoiceItems(choices, 0, (dialog, which) -> {
-
-                });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
     private void showAddFileDialog(String format, String path) {
         DialogAddFileBinding dialogAddFileBinding = DialogAddFileBinding.inflate(getLayoutInflater());
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);
@@ -245,7 +223,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             @Override
             public void onPositiveButtonClick(String path) {
                 Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
-                ChoicesFormatFile(path);
+                showAddFileDialog("txt",path);
             }
 
             @Override
