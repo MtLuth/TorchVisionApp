@@ -198,5 +198,12 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     @Override
     public void onFileItemClick(View v, int pos) {
         Toast.makeText(getContext(), ""+folderList.get(pos).getName(), Toast.LENGTH_SHORT).show();
+
+        String folderName = folderList.get(pos).getName();
+        String folderPath = requireContext().getFilesDir() + "/" + folderName;
+
+        Intent intent = new Intent(requireContext(), HomeFragment.class);
+        intent.putExtra("folder_path", folderPath);
+        startActivity(intent);
     }
 }
