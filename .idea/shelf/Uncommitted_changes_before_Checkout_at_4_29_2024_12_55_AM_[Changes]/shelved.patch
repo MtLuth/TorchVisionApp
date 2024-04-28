@@ -1,0 +1,90 @@
+Index: app/src/main/java/com/example/torchvisionapp/model/DocumentFile.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.torchvisionapp.model;\r\n\r\nimport android.content.Context;\r\nimport android.widget.Toast;\r\n\r\n\r\nimport java.io.File;\r\nimport java.io.FileWriter;\r\nimport java.io.IOException;\r\n\r\npublic class DocumentFile {\r\n    private Context context;\r\n\r\n    public DocumentFile(Context context) {\r\n        this.context = context;\r\n    }\r\n\r\n    public void saveAsFile(String content, String fileName, String format, String path) {\r\n        if (fileName.isEmpty() || format.isEmpty()) {\r\n            Toast.makeText(context, \"Please enter file name and format\", Toast.LENGTH_SHORT).show();\r\n        }\r\n        File directory = new File(path);\r\n        if (!directory.exists() && directory.isDirectory()) {\r\n            directory.mkdirs();\r\n        }\r\n        File file = new File(directory, fileName + \".\" + format);\r\n        file.setReadable(true);\r\n        file.setWritable(true);\r\n        Toast.makeText(context, \"\" + fileName + \".\" + format, Toast.LENGTH_SHORT).show();\r\n\r\n        if (file.exists()) {\r\n            Toast.makeText(context, \"File already exists\", Toast.LENGTH_SHORT).show();\r\n            return;\r\n        }\r\n\r\n        String textToWrite = content;\r\n\r\n        try {\r\n            FileWriter writer = new FileWriter(file);\r\n\r\n            writer.write(textToWrite);\r\n            writer.flush();\r\n            writer.close();\r\n\r\n            Toast.makeText(context, \"File saved successfully \"+path, Toast.LENGTH_SHORT).show();\r\n        } catch (IOException e) {\r\n\r\n            e.printStackTrace();\r\n            Toast.makeText(context, \"Error saving file\", Toast.LENGTH_SHORT).show();\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/torchvisionapp/model/DocumentFile.java b/app/src/main/java/com/example/torchvisionapp/model/DocumentFile.java
+--- a/app/src/main/java/com/example/torchvisionapp/model/DocumentFile.java	(revision 95e10c3b4b1fe73420f5c302bdc7d92dc55147e8)
++++ b/app/src/main/java/com/example/torchvisionapp/model/DocumentFile.java	(date 1714324024411)
+@@ -24,8 +24,10 @@
+             directory.mkdirs();
+         }
+         File file = new File(directory, fileName + "." + format);
++
+         file.setReadable(true);
+         file.setWritable(true);
++
+         Toast.makeText(context, "" + fileName + "." + format, Toast.LENGTH_SHORT).show();
+ 
+         if (file.exists()) {
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <uses-feature\r\n        android:name=\"android.hardware.camera\"\r\n        android:required=\"false\" />\r\n\r\n    <uses-permission android:name=\"android.permission.READ_MEDIA_IMAGES\" />\r\n    <uses-permission android:name=\"android.permission.CAMERA\" />\r\n    <uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />\r\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.TorchVisionApp\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".TranslateActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".ContactUs\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".AboutUs\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".TextConverter\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".SignInActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".VerificationCodeActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".SendCodeVerifyActivity\"\r\n            android:exported=\"false\" />\r\n        <activity\r\n            android:name=\".SignUpActivity\"\r\n            android:exported=\"false\"\r\n            android:label=\"@string/title_activity_sign_up\"\r\n            android:theme=\"@style/Theme.TorchVisionApp\" />\r\n        <activity\r\n            android:name=\".MainScreenAppActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision 95e10c3b4b1fe73420f5c302bdc7d92dc55147e8)
++++ b/app/src/main/AndroidManifest.xml	(date 1714325238163)
+@@ -10,6 +10,7 @@
+     <uses-permission android:name="android.permission.CAMERA" />
+     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
++    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+ 
+     <application
+         android:allowBackup="true"
+@@ -21,6 +22,9 @@
+         android:supportsRtl="true"
+         android:theme="@style/Theme.TorchVisionApp"
+         tools:targetApi="31">
++        <activity
++            android:name=".MainScreenAppActivity"
++            android:exported="false" />
+         <activity
+             android:name=".TranslateActivity"
+             android:exported="false" />
+@@ -51,7 +55,7 @@
+             android:label="@string/title_activity_sign_up"
+             android:theme="@style/Theme.TorchVisionApp" />
+         <activity
+-            android:name=".MainScreenAppActivity"
++            android:name=".ReadFile"
+             android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+Index: .idea/deploymentTargetDropDown.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetDropDown\">\r\n    <value>\r\n      <entry key=\"app\">\r\n        <State />\r\n      </entry>\r\n    </value>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetDropDown.xml b/.idea/deploymentTargetDropDown.xml
+--- a/.idea/deploymentTargetDropDown.xml	(revision 95e10c3b4b1fe73420f5c302bdc7d92dc55147e8)
++++ b/.idea/deploymentTargetDropDown.xml	(date 1714323554558)
+@@ -3,7 +3,20 @@
+   <component name="deploymentTargetDropDown">
+     <value>
+       <entry key="app">
+-        <State />
++        <State>
++          <targetSelectedWithDropDown>
++            <Target>
++              <type value="QUICK_BOOT_TARGET" />
++              <deviceKey>
++                <Key>
++                  <type value="VIRTUAL_DEVICE_PATH" />
++                  <value value="C:\Users\litch\.android\avd\Pixel_3a_API_34_extension_level_7_x86_64.avd" />
++                </Key>
++              </deviceKey>
++            </Target>
++          </targetSelectedWithDropDown>
++          <timeTargetWasSelectedWithDropDown value="2024-04-28T15:57:40.923031900Z" />
++        </State>
+       </entry>
+     </value>
+   </component>

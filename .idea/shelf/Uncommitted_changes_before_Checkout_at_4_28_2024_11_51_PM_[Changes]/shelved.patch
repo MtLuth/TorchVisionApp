@@ -1,0 +1,92 @@
+Index: app/src/main/java/com/example/torchvisionapp/TextConverter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.torchvisionapp;\r\n\r\nimport static androidx.core.content.ContentProviderCompat.requireContext;\r\n\r\nimport static java.security.AccessController.getContext;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.AlertDialog;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.databinding.DataBindingUtil;\r\nimport androidx.lifecycle.ViewModelProvider;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport android.app.Activity;\r\nimport android.content.Intent;\r\nimport android.net.Uri;\r\nimport android.os.Bundle;\r\nimport android.os.Environment;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.example.torchvisionapp.databinding.ActivityTextConverterBinding;\r\nimport com.example.torchvisionapp.databinding.DialogAddFileBinding;\r\nimport com.example.torchvisionapp.databinding.DialogAddFolderBinding;\r\nimport com.example.torchvisionapp.databinding.PickFolderLayoutBinding;\r\nimport com.example.torchvisionapp.fragment.PickFolderDialogFragment;\r\nimport com.example.torchvisionapp.model.DocumentFile;\r\nimport com.example.torchvisionapp.model.FileItem;\r\nimport com.example.torchvisionapp.view.FileAdapter;\r\nimport com.example.torchvisionapp.viewmodel.FileExplorer;\r\nimport com.example.torchvisionapp.viewmodel.TextConverterViewModel;\r\nimport com.github.dhaval2404.imagepicker.ImagePicker;\r\nimport com.google.android.gms.tasks.OnFailureListener;\r\nimport com.google.android.gms.tasks.OnSuccessListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.mlkit.vision.common.InputImage;\r\nimport com.google.mlkit.vision.text.Text;\r\nimport com.google.mlkit.vision.text.TextRecognition;\r\nimport com.google.mlkit.vision.text.TextRecognizer;\r\nimport com.google.mlkit.vision.text.latin.TextRecognizerOptions;\r\n\r\nimport java.io.File;\r\nimport java.io.FileWriter;\r\nimport java.io.IOException;\r\nimport java.util.ArrayList;\r\n\r\n\r\npublic class TextConverter extends AppCompatActivity implements ItemClickListener{\r\n    ActivityTextConverterBinding binding;\r\n    ImageView camera,gallery;\r\n    EditText recgText;\r\n\r\n    private FileAdapter folderAdapter;\r\n    private ArrayList<FileItem> folderList;\r\n    TextView actionCancel, actionSave;\r\n    TextRecognizer textRecognizer;\r\n    Uri imageUri;\r\n    TextConverterViewModel viewModel;\r\n    public String mFolderSelected;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_text_converter);\r\n\r\n        viewModel = new ViewModelProvider(this).get(TextConverterViewModel.class);\r\n\r\n        binding = DataBindingUtil.setContentView(\r\n                this,\r\n                R.layout.activity_text_converter\r\n        );\r\n\r\n        camera = binding.btnCamera;\r\n        gallery = binding.btnImportGallery;\r\n\r\n        actionSave = binding.actionSave;\r\n        actionSave.setVisibility(View.INVISIBLE);\r\n        actionCancel = binding.actionCancel;\r\n        actionCancel.setVisibility(View.INVISIBLE);\r\n\r\n        recgText = binding.recordText;\r\n\r\n        textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);\r\n\r\n        camera.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                ImagePicker.with(TextConverter.this)\r\n                        .cameraOnly()\t//User can only select image from Gallery\r\n                        .start();\t//Default Request Code is ImagePicker.REQUEST_CODE\r\n            }\r\n        });\r\n        gallery.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                ImagePicker.with(TextConverter.this)\r\n                        .galleryOnly()\t//User can only select image from Gallery\r\n                        .start();\t//Default Request Code is ImagePicker.REQUEST_CODE\r\n            }\r\n        });\r\n        addClickListener();\r\n        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();\r\n        Log.i(\"path\", path);\r\n        folderList = viewModel.loadFolderList(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));\r\n        Log.i(\"countaaa\", \"\"+folderList.size());\r\n    }\r\n\r\n    private void addClickListener() {\r\n        actionSave.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                saveFile();\r\n            }\r\n        });\r\n\r\n        actionCancel.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                recgText.setText(\"\");\r\n                actionSave.setVisibility(View.INVISIBLE);\r\n                actionCancel.setVisibility(View.INVISIBLE);\r\n            }\r\n        });\r\n    }\r\n\r\n    @Override\r\n    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {\r\n        super.onActivityResult(requestCode, resultCode, data);\r\n\r\n        if (requestCode == ImagePicker.REQUEST_CODE) {\r\n            if (resultCode == Activity.RESULT_OK && data != null) {\r\n                imageUri = data.getData();\r\n\r\n                recognizeText();\r\n\r\n                actionSave.setVisibility(View.VISIBLE);\r\n                actionCancel.setVisibility(View.VISIBLE);\r\n            }\r\n        }\r\n    }\r\n\r\n    private void recognizeText() {\r\n        if (imageUri != null){\r\n            try {\r\n                InputImage inputImage = InputImage.fromFilePath(TextConverter.this,imageUri);\r\n\r\n                Task<Text> result = textRecognizer.process(inputImage)\r\n                        .addOnSuccessListener(new OnSuccessListener<Text>() {\r\n                            @Override\r\n                            public void onSuccess(Text text) {\r\n\r\n                                String recognizeText = text.getText();\r\n                                recgText.setText(recognizeText);\r\n                            }\r\n                        }).addOnFailureListener(new OnFailureListener() {\r\n                            @Override\r\n                            public void onFailure(@NonNull Exception e) {\r\n                                Toast.makeText(TextConverter.this,e.getMessage(),Toast.LENGTH_LONG).show();\r\n                            }\r\n                        });\r\n            } catch (IOException e) {\r\n                throw new RuntimeException(e);\r\n            }\r\n        }\r\n    }\r\n    public void ChoicesFormatFile(){\r\n        String[] choices = {\"docx\", \"pdf\", \"txt\"};\r\n        AlertDialog.Builder builder = new AlertDialog.Builder(TextConverter.this);\r\n        builder\r\n                .setTitle(\"Choice format file\")\r\n                .setPositiveButton(\"Save\", (dialog, which) -> {\r\n                    int selectedFormatIndex = ((AlertDialog) dialog).getListView().getCheckedItemPosition();\r\n                    String selectedFormat = choices[selectedFormatIndex];\r\n\r\n                    Toast.makeText(this,\"\" + selectedFormat, Toast.LENGTH_SHORT).show();\r\n                    showAddFileDialog(selectedFormat, path);\r\n                })\r\n                .setNegativeButton(\"Cancel\", (dialog, which) -> {\r\n\r\n                })\r\n                .setSingleChoiceItems(choices, 0, (dialog, which) -> {\r\n\r\n                });\r\n\r\n        AlertDialog dialog = builder.create();\r\n        dialog.show();\r\n    }\r\n    private void showAddFileDialog(String format, String path) {\r\n        DialogAddFileBinding dialogAddFileBinding = DialogAddFileBinding.inflate(getLayoutInflater());\r\n        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);\r\n        dialogBuilder.setView(dialogAddFileBinding.getRoot());\r\n\r\n        final EditText editTextFileName = dialogAddFileBinding.editTextFileName;\r\n        Button btnSave = dialogAddFileBinding.btnSave;\r\n        Button btnCancel = dialogAddFileBinding.btnCancel;\r\n\r\n        final AlertDialog alertDialog = dialogBuilder.create();\r\n        btnSave.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                String fileName = editTextFileName.getText().toString().trim();\r\n                if (!fileName.isEmpty()) {\r\n                    saveAsFile(fileName, format, path);\r\n                    alertDialog.dismiss();\r\n                } else {\r\n                    Toast.makeText(TextConverter.this, \"Please enter file name\", Toast.LENGTH_SHORT).show();\r\n                }\r\n            }\r\n        });\r\n\r\n\r\n        btnCancel.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                alertDialog.dismiss();\r\n            }\r\n        });\r\n        alertDialog.show();\r\n    }\r\n    private void saveAsFile(String fileName, String format, String path) {\r\n        DocumentFile docs = new DocumentFile(getApplicationContext());\r\n        docs.saveAsFile(recgText.getText().toString(), fileName, format, path);\r\n    }\r\n    @Override\r\n    public void onSettingItemClick(View v, int pos) {\r\n\r\n    }\r\n\r\n    @Override\r\n    public void onFileItemClick(View v, int pos) {\r\n\r\n    }\r\n\r\n    private void saveFile() {\r\n        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList);\r\n        pickFolderDialogFragment.show(getSupportFragmentManager(), \"dialog_tag\");\r\n        pickFolderDialogFragment.setClickListener(new DialogButtonClickListener() {\r\n            @Override\r\n            public void onPositiveButtonClick(String path) {\r\n                Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();\r\n                ChoicesFormatFile(path);\r\n            }\r\n\r\n            @Override\r\n            public void onNegativeButtonClick() {\r\n                Toast.makeText(getApplicationContext(), \"cancel\", Toast.LENGTH_SHORT).show();\r\n            }\r\n        });\r\n    }\r\n\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/torchvisionapp/TextConverter.java b/app/src/main/java/com/example/torchvisionapp/TextConverter.java
+--- a/app/src/main/java/com/example/torchvisionapp/TextConverter.java	(revision e101e56859e32a1064d847040dccb1d917d4e9a0)
++++ b/app/src/main/java/com/example/torchvisionapp/TextConverter.java	(date 1714323042096)
+@@ -180,7 +180,7 @@
+                     String selectedFormat = choices[selectedFormatIndex];
+ 
+                     Toast.makeText(this,"" + selectedFormat, Toast.LENGTH_SHORT).show();
+-                    showAddFileDialog(selectedFormat, path);
++                    showAddFileDialog(selectedFormat);
+                 })
+                 .setNegativeButton("Cancel", (dialog, which) -> {
+ 
+@@ -192,7 +192,29 @@
+         AlertDialog dialog = builder.create();
+         dialog.show();
+     }
+-    private void showAddFileDialog(String format, String path) {
++
++    private ArrayList<FileItem> showExistingFolders() {
++        String path = this.getFilesDir().getPath();
++        ArrayList<FileItem> fileItems = new ArrayList<>();
++        FileExplorer explorer = new FileExplorer(TextConverter.this);
++        ArrayList<File> folderList = explorer.loadExistingFolderFromPath(path);
++        Log.i("path", path);
++        if (folderList != null) {
++            for (File file : folderList) {
++                if (file.isDirectory()) {
++                    FileItem fileItem = new FileItem();
++                    fileItem.setName(file.getName());
++                    fileItem.setIcon(R.drawable.iconfolder_actived);
++                    int count = explorer.countNumberOfFileInDirectory(file.getPath());
++                    fileItem.setStatus(count+" files");
++
++                    fileItems.add(fileItem);
++                }
++            }
++        }
++        return fileItems;
++    }
++    private void showAddFileDialog(String format) {
+         DialogAddFileBinding dialogAddFileBinding = DialogAddFileBinding.inflate(getLayoutInflater());
+         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);
+         dialogBuilder.setView(dialogAddFileBinding.getRoot());
+@@ -207,7 +229,7 @@
+             public void onClick(View v) {
+                 String fileName = editTextFileName.getText().toString().trim();
+                 if (!fileName.isEmpty()) {
+-                    saveAsFile(fileName, format, path);
++                    saveAsFile(fileName, format);
+                     alertDialog.dismiss();
+                 } else {
+                     Toast.makeText(TextConverter.this, "Please enter file name", Toast.LENGTH_SHORT).show();
+@@ -224,9 +246,10 @@
+         });
+         alertDialog.show();
+     }
+-    private void saveAsFile(String fileName, String format, String path) {
++    private void saveAsFile(String fileName, String format) {
+         DocumentFile docs = new DocumentFile(getApplicationContext());
+-        docs.saveAsFile(recgText.getText().toString(), fileName, format, path);
++        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
++        docs.saveAsFile(recgText.getText().toString(), fileName, format, directory.getPath());
+     }
+     @Override
+     public void onSettingItemClick(View v, int pos) {
+@@ -241,18 +264,8 @@
+     private void saveFile() {
+         PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList);
+         pickFolderDialogFragment.show(getSupportFragmentManager(), "dialog_tag");
+-        pickFolderDialogFragment.setClickListener(new DialogButtonClickListener() {
+-            @Override
+-            public void onPositiveButtonClick(String path) {
+-                Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
+-                ChoicesFormatFile(path);
+-            }
+ 
+-            @Override
+-            public void onNegativeButtonClick() {
+-                Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
+-            }
+-        });
++        ChoicesFormatFile();
+     }
+ 
+ 
