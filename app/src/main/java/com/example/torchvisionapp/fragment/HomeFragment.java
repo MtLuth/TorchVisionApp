@@ -32,6 +32,7 @@ import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.FragmentHomeBinding;
+import com.example.torchvisionapp.viewmodel.FileExplorer;
 import com.google.android.gms.dynamic.SupportFragmentWrapper;
 
 import java.io.File;
@@ -56,11 +57,6 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         folderList = showExistingFolders();
         folderAdapter = new FileAdapter(folderList, getContext());
         folderAdapter.setClickListener(this);
-
-        for (FileItem i: folderList
-             ) {
-            Log.i("item1", i.getName());
-        }
 
         PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
         pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
@@ -173,15 +169,19 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     }
 
     private ArrayList<FileItem> showExistingFolders() {
-        File[] files = requireContext().getFilesDir().listFiles();
+        String path = requireContext().getFilesDir().getPath();
         ArrayList<FileItem> fileItems = new ArrayList<>();
-        if (files != null) {
-            for (File file : files) {
+        FileExplorer explorer = new FileExplorer(getContext());
+        ArrayList<File> folderList = explorer.loadExistingFolderFromPath(path);
+        Log.i("path", path);
+        if (folderList != null) {
+            for (File file : folderList) {
                 if (file.isDirectory()) {
                     FileItem fileItem = new FileItem();
                     fileItem.setName(file.getName());
                     fileItem.setIcon(R.drawable.iconfolder_actived);
-                    fileItem.setStatus("0 file");
+                    int count = explorer.countNumberOfFileInDirectory(file.getPath());
+                    fileItem.setStatus(count+" files");
 
                     fileItems.add(fileItem);
                 }

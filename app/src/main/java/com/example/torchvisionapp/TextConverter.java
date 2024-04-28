@@ -49,8 +49,6 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
 
     TextView actionCancel, actionSave;
     TextRecognizer textRecognizer;
-    ArrayList<FileItem> folderList;
-    FileAdapter fileAdapter;
     Uri imageUri;
 
     @Override
@@ -145,22 +143,6 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
                         });
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-        }
-    }
-    private void showExistingFiles() {
-        folderList = new ArrayList<>();
-        File[] files = TextConverter.this.getFilesDir().listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    FileItem fileItem = new FileItem();
-                    fileItem.setName(file.getName());
-                    fileItem.setIcon(R.drawable.icon_image_to_text);
-                    fileItem.setStatus("0 file");
-
-                    folderList.add(fileItem);
-                }
             }
         }
     }
