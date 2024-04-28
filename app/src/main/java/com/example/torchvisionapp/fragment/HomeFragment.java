@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.torchvisionapp.ItemClickListener;
+import com.example.torchvisionapp.TranslateActivity;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements ItemClickListener {
-    ImageView btnCamera, btnAddFolder;
+    ImageView btnCamera, btnAddFolder, btnTranslate;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ImageView folderImageView;
     private RecyclerView recyclerView, recyclerViewPickFolder;
@@ -98,6 +99,13 @@ public class HomeFragment extends Fragment implements ItemClickListener {
                 openCameraActivity();
             }
         });
+        btnTranslate = binding.btnTranslate;
+        btnTranslate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTranslateActivity(getContext());
+            }
+        });
         btnAddFolder = binding.btnAddFolder;
         btnAddFolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +113,8 @@ public class HomeFragment extends Fragment implements ItemClickListener {
                 showAddFolderDialog();
             }
         });
+
+
 
         //show folder in HomePage
         recyclerView = binding.recyclerView;
@@ -198,5 +208,10 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     @Override
     public void onFileItemClick(View v, int pos) {
         Toast.makeText(getContext(), ""+folderList.get(pos).getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void openTranslateActivity(Context context) {
+        Intent i = new Intent(context, TranslateActivity.class);
+        startActivity(i);
     }
 }

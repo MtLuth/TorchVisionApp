@@ -100,6 +100,13 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
                 showAddFolderDialog();
             }
         });
+
+        actionCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
