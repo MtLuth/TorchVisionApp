@@ -12,11 +12,6 @@
         tools:ignore="MenuTitle" />
 
     <item
-        android:id="@+id/navHeart"
-        android:icon="@drawable/icon_heart"
-        tools:ignore="MenuTitle" />
-
-    <item
         android:id="@+id/navSetting"
         android:icon="@drawable/icon_setting"
         tools:ignore="MenuTitle" />

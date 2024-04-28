@@ -15,12 +15,14 @@ public class FileItem extends BaseObservable {
     String name;
     String  path;
     String status;
+    String type;
 
-    public FileItem(int icon, String name, String status, String path) {
+    public FileItem(int icon, String name, String status, String path, String type) {
         this.icon = icon;
         this.name = name;
         this.status = status;
         this.path = path;
+        this.type = type;
     }
 
     @BindingAdapter({"iconImg"})
@@ -28,11 +30,6 @@ public class FileItem extends BaseObservable {
         Glide.with(imageView.getContext())
                 .load(iconSrc)
                 .into(imageView);
-    }
-
-    public FileItem(int icon, String name) {
-        this.icon = icon;
-        this.name = name;
     }
 
     @Bindable
@@ -71,6 +68,16 @@ public class FileItem extends BaseObservable {
     public void setPath(String path) {
         this.path = path;
         notifyPropertyChanged(BR.path);
+    }
+
+    @Bindable
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+        notifyPropertyChanged(BR.type);
     }
 
     public FileItem() {

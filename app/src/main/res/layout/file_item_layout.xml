@@ -14,14 +14,14 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            bind:icon_img="@{fileItem.icon}"
             android:id="@+id/imgIcon"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            bind:icon_img="@{fileItem.icon}" />
 
         <TextView
             android:id="@+id/textViewFolder"
@@ -40,10 +40,20 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:text="@{fileItem.status}"
-            android:textStyle="italic"
             android:textSize="12sp"
+            android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="@+id/imgIcon"
-            app:layout_constraintStart_toStartOf="@id/textViewFolder"/>
+            app:layout_constraintStart_toStartOf="@id/textViewFolder" />
+
+        <ImageButton
+            android:backgroundTint="@color/transparent"
+            android:id="@+id/btnDelete"
+            android:src="@drawable/delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

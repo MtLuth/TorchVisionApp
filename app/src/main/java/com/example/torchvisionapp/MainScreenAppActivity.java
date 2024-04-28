@@ -23,11 +23,7 @@ import com.example.torchvisionapp.databinding.FragmentSettingsBinding;
 import com.example.torchvisionapp.fragment.FolderFragment;
 import com.example.torchvisionapp.fragment.HeaderFragment;
 import com.example.torchvisionapp.fragment.HomeFragment;
-import com.example.torchvisionapp.fragment.MyFavoriteFragment;
 import com.example.torchvisionapp.fragment.SettingFragment;
-import com.example.torchvisionapp.model.SettingItem;
-import com.example.torchvisionapp.view.PrivacyListAdapter;
-import com.example.torchvisionapp.view.SettingItemAdapter;
 import com.example.torchvisionapp.viewmodel.MainScreenActivityViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -76,9 +72,6 @@ public class MainScreenAppActivity extends AppCompatActivity{
         }
         if (item.getItemId() == R.id.navMyFolder) {
             loadFragment(new HeaderFragment("MY FOLDER"), new FolderFragment());
-        }
-        if (item.getItemId() == R.id.navHeart) {
-            loadFragment(new HeaderFragment("MY FAVORITE"), new MyFavoriteFragment());
         }
         if (item.getItemId() == R.id.navSetting) {
             loadFragment(new HeaderFragment("SETTINGS"), new SettingFragment());

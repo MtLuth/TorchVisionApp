@@ -45,10 +45,6 @@ public class HeaderFragment extends Fragment {
                                 false
                         );
         binding.textHeader.setText(title);
-        if (title == "SETTINGS") {
-            binding.btnSearch.setVisibility(View.INVISIBLE);
-            binding.btnSort.setVisibility(View.INVISIBLE);
-        }
         return binding.getRoot();
     }
 }

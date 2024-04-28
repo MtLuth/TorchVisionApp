@@ -3,6 +3,7 @@ package com.example.torchvisionapp.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.torchvisionapp.DeleteFile;
+import com.example.torchvisionapp.FileItemClick;
 import com.example.torchvisionapp.ItemClickListener;
+import com.example.torchvisionapp.ReadFile;
 import com.example.torchvisionapp.TranslateActivity;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
@@ -38,15 +42,16 @@ import com.google.android.gms.dynamic.SupportFragmentWrapper;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements ItemClickListener {
+public class HomeFragment extends Fragment implements ItemClickListener, FileItemClick, DeleteFile {
     ImageView btnCamera, btnAddFolder, btnTranslate;
     private ActivityResultLauncher<Intent> image_to_textLaucher;
-    private ImageView folderImageView;
     private RecyclerView recyclerView, recyclerViewPickFolder;
     private FileAdapter folderAdapter;
-    private ArrayList<FileItem> folderList;
+    private ArrayList<FileItem> fileItemArrayList;
+    private String rootPath;
     PickFolderLayoutBinding binding;
 
     @Override
@@ -54,10 +59,14 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         super.onCreate(savedInstanceState);
 
         binding = PickFolderLayoutBinding.inflate(getLayoutInflater());
-
-        folderList = showExistingFolders();
-        folderAdapter = new FileAdapter(folderList, getContext());
+        rootPath = requireContext().getFilesDir().getPath();
+        fileItemArrayList = new ArrayList<>();
+        showExistingFolders();
+        showAllFileTxt();
+        Log.i("resultT", fileItemArrayList.size()+"");
+        folderAdapter = new FileAdapter(fileItemArrayList, getContext());
         folderAdapter.setClickListener(this);
+        folderAdapter.setDeleteFileListener(this);
 
         image_to_textLaucher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -159,14 +168,18 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     }
 
     private void createFolder(String folderName) {
-        File folder = new File(requireContext().getFilesDir(), folderName);
+        File folder = new File(rootPath+"/"+folderName);
         if (!folder.exists()) {
-            if (folder.mkdir()) {
-                String folderPath = folder.getAbsolutePath();
-                FileItem newFolder = new FileItem(R.drawable.iconfolder_actived, folderName, "0 files", folderPath);
-                folderList.add(newFolder);
+            if (folder.mkdirs()) {
+                FileItem newFolder = new FileItem();
+                newFolder.setPath(folder.getPath());
+                newFolder.setName(folderName);
+                newFolder.setIcon(R.drawable.iconfolder_actived);
+                newFolder.setType("directory");
+                newFolder.setStatus("0 files");
+                fileItemArrayList.add(newFolder);
                 folderAdapter.notifyDataSetChanged();
-                Toast.makeText(requireContext(), "Folder created successfully " + folderPath, Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Folder created successfully ", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "Failed to create folder", Toast.LENGTH_SHORT).show();
             }
@@ -177,9 +190,8 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
 
 
-    private ArrayList<FileItem> showExistingFolders() {
-        String path = requireContext().getFilesDir().getPath();
-        ArrayList<FileItem> fileItems = new ArrayList<>();
+    private void showExistingFolders() {
+        String path = rootPath;
         FileExplorer explorer = new FileExplorer(getContext());
         ArrayList<File> folderList = explorer.loadExistingFolderFromPath(path);
         Log.i("path", path);
@@ -190,14 +202,33 @@ public class HomeFragment extends Fragment implements ItemClickListener {
                     fileItem.setName(file.getName());
                     fileItem.setIcon(R.drawable.iconfolder_actived);
                     fileItem.setPath(file.getPath());
+                    fileItem.setType("directory");
                     int count = explorer.countNumberOfFileInDirectory(file.getPath());
                     fileItem.setStatus(count+" files");
 
-                    fileItems.add(fileItem);
+                    fileItemArrayList.add(fileItem);
                 }
             }
         }
-        return fileItems;
+    }
+
+    private void showAllFileTxt() {
+        String path = rootPath;
+        FileExplorer explorer = new FileExplorer(getContext());
+        ArrayList<File> fileArrayList = explorer.loadAllTextFiles(path);
+        if (fileArrayList != null) {
+            for (File file : fileArrayList) {
+                FileItem fileItem = new FileItem();
+                fileItem.setName(file.getName());
+                fileItem.setIcon(R.drawable.icon_image_to_text);
+                fileItem.setPath(file.getPath());
+                long date = file.lastModified();
+                Date status = new Date(date);
+                fileItem.setStatus(status.toString());
+
+                fileItemArrayList.add(fileItem);
+            }
+        }
     }
 
     @Override
@@ -205,20 +236,33 @@ public class HomeFragment extends Fragment implements ItemClickListener {
 
     }
 
-    @Override
-    public void onFileItemClick(View v, int pos) {
-        Toast.makeText(getContext(), ""+folderList.get(pos).getName(), Toast.LENGTH_SHORT).show();
-
-        String folderName = folderList.get(pos).getName();
-        String folderPath = requireContext().getFilesDir() + "/" + folderName;
-
-        Intent intent = new Intent(requireContext(), HomeFragment.class);
-        intent.putExtra("folder_path", folderPath);
-        startActivity(intent);
-    }
-
     private void openTranslateActivity(Context context) {
         Intent i = new Intent(context, TranslateActivity.class);
         startActivity(i);
+    }
+
+    @Override
+    public void fileClick(View v, int pos) {
+        FileItem file = fileItemArrayList.get(pos);
+        if (file.getType()=="directory") {
+            Toast.makeText(getContext(), "Directory", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "txt", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getContext(), ReadFile.class);
+            i.putExtra("uri", file.getPath());
+            startActivity(i);
+        }
+    }
+
+    @Override
+    public void deleteFile(String path, int pos) {
+        File file = new File(path);
+        if (file.exists()) {
+            file.delete();
+            Toast.makeText(getContext(), "complete", Toast.LENGTH_SHORT).show();
+            fileItemArrayList.remove(pos);
+            folderAdapter.setFileList(fileItemArrayList);
+            recyclerView.setAdapter(folderAdapter);
+        }
     }
 }
