@@ -110,10 +110,10 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             @Override
             public void onClick(View v) {
 
-                PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
-                pickFolderDialogFragment.show(getSupportFragmentManager(), "dialog_tag");
+//                PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
+//                pickFolderDialogFragment.show(getSupportFragmentManager(), "dialog_tag");
 
-//                ChoicesFormatFile();
+                ChoicesFormatFile();
             }
         });
 
@@ -173,7 +173,11 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         builder
                 .setTitle("Choice format file")
                 .setPositiveButton("Save", (dialog, which) -> {
-                    showAddFileDialog();
+                    int selectedFormatIndex = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                    String selectedFormat = choices[selectedFormatIndex];
+
+                    Toast.makeText(this,"" + selectedFormat, Toast.LENGTH_SHORT).show();
+                    showAddFileDialog(selectedFormat);
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {
 
@@ -207,7 +211,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         }
         return fileItems;
     }
-    private void showAddFileDialog() {
+    private void showAddFileDialog(String format) {
         DialogAddFileBinding dialogAddFileBinding = DialogAddFileBinding.inflate(getLayoutInflater());
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);
         dialogBuilder.setView(dialogAddFileBinding.getRoot());
@@ -222,7 +226,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             public void onClick(View v) {
                 String fileName = editTextFileName.getText().toString().trim();
                 if (!fileName.isEmpty()) {
-//                    createFile(fileName);
+                    saveAsFile(fileName, format);
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(TextConverter.this, "Please enter file name", Toast.LENGTH_SHORT).show();
@@ -239,19 +243,37 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         });
         alertDialog.show();
     }
-    private void createFile(String folderName) {
-//        File file = new File(this.getFilesDir(), folderName);
-//        if (!file.exists()) {
-//            if (file.mkdir()) {
-//                folderList.add(new FileItem(R.drawable.iconfolder_actived, folderName, "0 files"));
-//                folderAdapter.notifyDataSetChanged();
-//                Toast.makeText(this, "Folder screated successfully", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(this, "Failed to create folder", Toast.LENGTH_SHORT).show();
-//            }
-//        } else {
-//            Toast.makeText(this, "Folder already exists", Toast.LENGTH_SHORT).show();
-//        }
+    private void saveAsFile(String fileName, String format) {
+        if (fileName.isEmpty() || format.isEmpty()) {
+            Toast.makeText(TextConverter.this, "Please enter file name and format", Toast.LENGTH_SHORT).show();
+        }
+        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        File file = new File(directory, fileName + "." + format);
+        Toast.makeText(TextConverter.this, "" + fileName + "." + format, Toast.LENGTH_SHORT).show();
+
+        if (file.exists()) {
+            Toast.makeText(TextConverter.this, "File already exists", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String textToWrite = recgText.getText().toString();
+
+        try {
+            FileWriter writer = new FileWriter(file);
+
+            writer.write(textToWrite);
+            writer.flush();
+            writer.close();
+
+            Toast.makeText(TextConverter.this, "File saved successfully", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            Toast.makeText(TextConverter.this, "Error saving file", Toast.LENGTH_SHORT).show();
+        }
     }
     @Override
     public void onSettingItemClick(View v, int pos) {
