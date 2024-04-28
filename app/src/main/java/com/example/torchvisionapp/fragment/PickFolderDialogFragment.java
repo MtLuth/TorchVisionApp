@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.example.torchvisionapp.view.FileAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import javax.xml.xpath.XPath;
 
 public class PickFolderDialogFragment extends DialogFragment {
     ArrayList<FileItem> listFolder;
@@ -72,6 +75,7 @@ public class PickFolderDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (selectedFolderName == ""){
                     Toast.makeText(getContext(), "save to root", Toast.LENGTH_SHORT).show();
+                    selectedFolderName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
                 }
                 else {
                     Toast.makeText(getContext(), selectedFolderName, Toast.LENGTH_SHORT).show();
