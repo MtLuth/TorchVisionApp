@@ -13,13 +13,14 @@ public class FileItem extends BaseObservable {
 
     int icon;
     String name;
-
+    String  path;
     String status;
 
-    public FileItem(int icon, String name, String status) {
+    public FileItem(int icon, String name, String status, String path) {
         this.icon = icon;
         this.name = name;
         this.status = status;
+        this.path = path;
     }
 
     @BindingAdapter({"iconImg"})
@@ -61,6 +62,15 @@ public class FileItem extends BaseObservable {
     public void setStatus(String status) {
         this.status = status;
         notifyPropertyChanged(BR.status);
+    }
+    @Bindable
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+        notifyPropertyChanged(BR.path);
     }
 
     public FileItem() {

@@ -42,7 +42,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements ItemClickListener {
     ImageView btnCamera, btnAddFolder, btnTranslate;
-    private ActivityResultLauncher<Intent> cameraLauncher;
+    private ActivityResultLauncher<Intent> image_to_textLaucher;
     private ImageView folderImageView;
     private RecyclerView recyclerView, recyclerViewPickFolder;
     private FileAdapter folderAdapter;
@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList, folderAdapter);
         pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
 
-        cameraLauncher = registerForActivityResult(
+        image_to_textLaucher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -114,8 +114,6 @@ public class HomeFragment extends Fragment implements ItemClickListener {
             }
         });
 
-
-
         //show folder in HomePage
         recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -126,7 +124,7 @@ public class HomeFragment extends Fragment implements ItemClickListener {
     }
     private void openCameraActivity() {
         Intent intent = new Intent(requireContext(), TextConverter.class);
-        cameraLauncher.launch(intent);
+        image_to_textLaucher.launch(intent);
     }
     private void showAddFolderDialog() {
         // Tạo AlertDialog
@@ -167,9 +165,11 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         File folder = new File(requireContext().getFilesDir(), folderName);
         if (!folder.exists()) {
             if (folder.mkdir()) {
-                folderList.add(new FileItem(R.drawable.iconfolder_actived, folderName, "0 files"));
+                String folderPath = folder.getAbsolutePath();
+                FileItem newFolder = new FileItem(R.drawable.iconfolder_actived, folderName, "0 files", folderPath);
+                folderList.add(newFolder);
                 folderAdapter.notifyDataSetChanged();
-                Toast.makeText(requireContext(), "Folder created successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Folder created successfully " + folderPath, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(requireContext(), "Failed to create folder", Toast.LENGTH_SHORT).show();
             }
@@ -177,6 +177,8 @@ public class HomeFragment extends Fragment implements ItemClickListener {
             Toast.makeText(requireContext(), "Folder already exists", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     private ArrayList<FileItem> showExistingFolders() {
         String path = requireContext().getFilesDir().getPath();
