@@ -170,7 +170,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             }
         }
     }
-    public void ChoicesFormatFile(){
+    public void ChoicesFormatFile(String path){
         String[] choices = {"docx", "pdf"};
         AlertDialog.Builder builder = new AlertDialog.Builder(TextConverter.this);
         builder
@@ -180,7 +180,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
                     String selectedFormat = choices[selectedFormatIndex];
 
                     Toast.makeText(this,"" + selectedFormat, Toast.LENGTH_SHORT).show();
-                    showAddFileDialog(selectedFormat);
+                    showAddFileDialog(selectedFormat, path);
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> {
 
@@ -192,29 +192,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-    private ArrayList<FileItem> showExistingFolders() {
-        String path = this.getFilesDir().getPath();
-        ArrayList<FileItem> fileItems = new ArrayList<>();
-        FileExplorer explorer = new FileExplorer(TextConverter.this);
-        ArrayList<File> folderList = explorer.loadExistingFolderFromPath(path);
-        Log.i("path", path);
-        if (folderList != null) {
-            for (File file : folderList) {
-                if (file.isDirectory()) {
-                    FileItem fileItem = new FileItem();
-                    fileItem.setName(file.getName());
-                    fileItem.setIcon(R.drawable.iconfolder_actived);
-                    int count = explorer.countNumberOfFileInDirectory(file.getPath());
-                    fileItem.setStatus(count+" files");
-
-                    fileItems.add(fileItem);
-                }
-            }
-        }
-        return fileItems;
-    }
-    private void showAddFileDialog(String format) {
+    private void showAddFileDialog(String format, String path) {
         DialogAddFileBinding dialogAddFileBinding = DialogAddFileBinding.inflate(getLayoutInflater());
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(TextConverter.this);
         dialogBuilder.setView(dialogAddFileBinding.getRoot());
@@ -229,7 +207,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             public void onClick(View v) {
                 String fileName = editTextFileName.getText().toString().trim();
                 if (!fileName.isEmpty()) {
-                    saveAsFile(fileName, format);
+                    saveAsFile(fileName, format, path);
                     alertDialog.dismiss();
                 } else {
                     Toast.makeText(TextConverter.this, "Please enter file name", Toast.LENGTH_SHORT).show();
@@ -246,10 +224,9 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         });
         alertDialog.show();
     }
-    private void saveAsFile(String fileName, String format) {
+    private void saveAsFile(String fileName, String format, String path) {
         DocumentFile docs = new DocumentFile(getApplicationContext());
-        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        docs.saveAsFile(recgText.getText().toString(), fileName, format, directory.getPath());
+        docs.saveAsFile(recgText.getText().toString(), fileName, format, path);
     }
     @Override
     public void onSettingItemClick(View v, int pos) {
@@ -264,8 +241,18 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     private void saveFile() {
         PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList);
         pickFolderDialogFragment.show(getSupportFragmentManager(), "dialog_tag");
+        pickFolderDialogFragment.setClickListener(new DialogButtonClickListener() {
+            @Override
+            public void onPositiveButtonClick(String path) {
+                Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
+                ChoicesFormatFile(path);
+            }
 
-        ChoicesFormatFile();
+            @Override
+            public void onNegativeButtonClick() {
+                Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

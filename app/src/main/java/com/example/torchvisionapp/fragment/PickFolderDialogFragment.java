@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.torchvisionapp.DialogButtonClickListener;
 import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
@@ -30,7 +31,13 @@ public class PickFolderDialogFragment extends DialogFragment {
     ArrayList<FileItem> listFolder;
     ListView listView;
     CustomAdapter adapter;
+    DialogButtonClickListener clickListener;
     String selectedFolderName = "";
+
+    public void setClickListener(DialogButtonClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
     public PickFolderDialogFragment(ArrayList<FileItem> listFolder) {
         this.listFolder = listFolder;
     }
@@ -57,6 +64,7 @@ public class PickFolderDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                clickListener.onNegativeButtonClick();
             }
         });
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -67,6 +75,9 @@ public class PickFolderDialogFragment extends DialogFragment {
                 }
                 else {
                     Toast.makeText(getContext(), selectedFolderName, Toast.LENGTH_SHORT).show();
+                }
+                if (clickListener!=null) {
+                    clickListener.onPositiveButtonClick(selectedFolderName);
                 }
             }
         });

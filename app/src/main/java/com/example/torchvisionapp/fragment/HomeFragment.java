@@ -59,9 +59,6 @@ public class HomeFragment extends Fragment implements ItemClickListener {
         folderAdapter = new FileAdapter(folderList, getContext());
         folderAdapter.setClickListener(this);
 
-        PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList);
-        pickFolderDialogFragment.show(getActivity().getSupportFragmentManager(), "aaa");
-
         image_to_textLaucher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
