@@ -24,6 +24,7 @@ public class FileExplorer {
                     for (File file: files) {
                         if (file.isDirectory()) {
                             folderList.add(file);
+                            Log.i("load", file.getName());
                         }
                     }
                 }

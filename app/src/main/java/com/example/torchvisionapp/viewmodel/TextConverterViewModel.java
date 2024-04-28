@@ -21,7 +21,7 @@ public class TextConverterViewModel extends AndroidViewModel {
     public ArrayList<FileItem> loadFolderList(File path) {
         listFolders = new ArrayList<>();
         listFileItem = new ArrayList<>();
-        FileExplorer fileExplorer = new FileExplorer();
+        FileExplorer fileExplorer = new FileExplorer(getApplication().getApplicationContext());
         listFolders = fileExplorer.loadExistingFolderFromPath(path.getPath());
         if (listFolders != null) {
             for (File f: listFolders) {
@@ -30,7 +30,6 @@ public class TextConverterViewModel extends AndroidViewModel {
                     item.setName(f.getName());
                     item.setIcon(R.drawable.iconfolder_actived);
                     item.setPath(f.getPath());
-                    item.setType("directory");
                     item.setStatus(fileExplorer.countNumberOfFileInDirectory(f.getPath())+" files");
                     listFileItem.add(item);
                 }

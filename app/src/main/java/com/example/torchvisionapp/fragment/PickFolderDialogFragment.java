@@ -16,6 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.CustomAdapter;
@@ -38,7 +40,7 @@ public class PickFolderDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         PickFolderLayoutBinding binding = PickFolderLayoutBinding.inflate(getLayoutInflater());
         listView = binding.listView;
-
+        Log.i("a", ""+listFolder.size());
         adapter = new CustomAdapter(getContext(), listFolder);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -64,7 +66,6 @@ public class PickFolderDialogFragment extends DialogFragment {
                     Toast.makeText(getContext(), "save to root", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    //save
                     Toast.makeText(getContext(), selectedFolderName, Toast.LENGTH_SHORT).show();
                 }
             }

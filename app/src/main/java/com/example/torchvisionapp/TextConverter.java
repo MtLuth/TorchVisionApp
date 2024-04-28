@@ -35,7 +35,7 @@ import com.example.torchvisionapp.model.DocumentFile;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.viewmodel.FileExplorer;
-import com.example.torchvisionapp.viewmodel.LoadExistingFileViewModel;
+import com.example.torchvisionapp.viewmodel.TextConverterViewModel;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,14 +62,15 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     TextView actionCancel, actionSave;
     TextRecognizer textRecognizer;
     Uri imageUri;
-    LoadExistingFileViewModel viewModel;
+    TextConverterViewModel viewModel;
+    public String mFolderSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_converter);
 
-        viewModel = new ViewModelProvider(this).get(LoadExistingFileViewModel.class);
+        viewModel = new ViewModelProvider(this).get(TextConverterViewModel.class);
 
         binding = DataBindingUtil.setContentView(
                 this,
@@ -105,10 +106,10 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             }
         });
         addClickListener();
-
-        folderList = viewModel.loadExistingFolder(this.getFilesDir().getPath());
-        folderAdapter = new FileAdapter(folderList, this);
-        folderAdapter.setClickListener(this);
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        Log.i("path", path);
+        folderList = viewModel.loadFolderList(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+        Log.i("countaaa", ""+folderList.size());
     }
 
     private void addClickListener() {
@@ -263,6 +264,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     private void saveFile() {
         PickFolderDialogFragment pickFolderDialogFragment = new PickFolderDialogFragment(folderList);
         pickFolderDialogFragment.show(getSupportFragmentManager(), "dialog_tag");
+
         ChoicesFormatFile();
     }
 
