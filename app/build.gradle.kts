@@ -6,7 +6,12 @@ plugins {
 android {
     namespace = "com.example.torchvisionapp"
     compileSdk = 34
-
+    packagingOptions {
+        pickFirst("lib/x86/libc++_shared.so")
+        pickFirst("lib/x86_64/libc++_shared.so")
+        pickFirst("lib/armeabi-v7a/libc++_shared.so")
+        pickFirst("lib/arm64-v8a/libc++_shared.so")
+    }
     defaultConfig {
         applicationId = "com.example.torchvisionapp"
         minSdk = 24
@@ -23,7 +28,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -47,6 +55,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -79,4 +88,21 @@ dependencies {
 
     implementation("com.github.dhaval2404:imagepicker:2.1")
     implementation("com.google.mlkit:text-recognition:16.0.0")
+
+
+    // dependencies for OCR model
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
+
+    implementation("org.tensorflow:tensorflow-lite:+")
+    implementation("org.tensorflow:tensorflow-lite-gpu:+")
+    implementation("org.tensorflow:tensorflow-lite-select-tf-ops:+")
+    implementation("org.tensorflow:tensorflow-lite-support:+")
+
+    implementation("com.quickbirdstudios:opencv:4.5.3.0")
+    implementation("com.github.bumptech.glide:glide:4.11.0")
+
+    // dependencies for machine translate
+    implementation("org.pytorch:pytorch_android_lite:+")
+
 }
