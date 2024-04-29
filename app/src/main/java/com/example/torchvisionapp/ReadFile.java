@@ -53,10 +53,11 @@ public class ReadFile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 shareFile(uri);
-                Toast.makeText(getApplicationContext(), "aâa", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "aâa", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
 
     protected void readText(String path) {
