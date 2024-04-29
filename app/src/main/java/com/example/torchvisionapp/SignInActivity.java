@@ -117,6 +117,7 @@ public class SignInActivity extends AppCompatActivity {
 
                     // if sign in is successful => navigate to home activity
                     Intent i = new Intent(getApplicationContext(), MainScreenAppActivity.class);
+                    i.putExtra("email", emailTextView.getText());
                     startActivity(i);
                 } else {
                     // sign in failed

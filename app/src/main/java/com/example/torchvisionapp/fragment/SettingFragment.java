@@ -36,6 +36,7 @@ public class SettingFragment extends Fragment implements ItemClickListener {
     ArrayList<SettingItem> settingItemArrayList = new ArrayList<>();
     ArrayList<String> privacyList = new ArrayList<>();
     SettingItemAdapter settingItemAdapter;
+    public String email = null;
 
 
     @Override
@@ -74,6 +75,10 @@ public class SettingFragment extends Fragment implements ItemClickListener {
     private void loadSettingItem(FragmentSettingsBinding binding) {
 
         settingItemArrayList = viewModel.loadSettingItemList();
+        if (email != null) {
+            settingItemArrayList.get(0).setTitle("Sign out");
+        }
+
 
         settingItemAdapter = new SettingItemAdapter(settingItemArrayList, getContext());
         settingItemAdapter.setClickListener(this);

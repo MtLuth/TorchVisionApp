@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -26,6 +27,7 @@ public class MainScreenAppActivity extends AppCompatActivity implements OnFragme
     BottomNavigationView navigationView;
     MainScreenActivityViewModel viewModel;
     String rootPath;
+    String email;
 
 
     @Override
@@ -36,6 +38,8 @@ public class MainScreenAppActivity extends AppCompatActivity implements OnFragme
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main_screen_app);
 
         navigationView = binding.bottomNavigation;
+        Intent i = getIntent();
+        email = i.getStringExtra("email");
 
         viewModel = new ViewModelProvider(this)
                 .get(MainScreenActivityViewModel.class);
@@ -73,6 +77,8 @@ public class MainScreenAppActivity extends AppCompatActivity implements OnFragme
             loadFragment(new HeaderFragment("MY FOLDER"), folderFragment);
         }
         if (item.getItemId() == R.id.navSetting) {
+            SettingFragment settingFragment = new SettingFragment();
+            settingFragment.email = email;
             loadFragment(new HeaderFragment("SETTINGS"), new SettingFragment());
         }
     }

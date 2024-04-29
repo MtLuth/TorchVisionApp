@@ -26,12 +26,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="21110851 - Hoàng Quang Khải"
+            android:text="21110205 - Hoàng Quang Khải"
             android:textSize="24sp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="21110851 - Trương Minh Triều"
+            android:text="21110326 - Trương Minh Triều"
             android:textSize="24sp"/>
     </LinearLayout>
 
