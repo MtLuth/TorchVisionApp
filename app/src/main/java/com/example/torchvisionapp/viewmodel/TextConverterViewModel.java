@@ -6,11 +6,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
 import com.example.torchvisionapp.R;
+import com.example.torchvisionapp.model.FileExplorer;
 import com.example.torchvisionapp.model.FileItem;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TextConverterViewModel extends AndroidViewModel {
     private ArrayList<File> listFolders;

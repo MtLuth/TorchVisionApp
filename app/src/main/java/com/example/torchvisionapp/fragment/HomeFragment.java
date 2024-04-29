@@ -3,7 +3,6 @@ package com.example.torchvisionapp.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.example.torchvisionapp.FileItemClick;
 import com.example.torchvisionapp.ItemClickListener;
 import com.example.torchvisionapp.OnFragmentClick;
 import com.example.torchvisionapp.ReadFile;
-import com.example.torchvisionapp.TranslateActivity;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
 import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.model.FileItem;
@@ -39,13 +37,11 @@ import com.example.torchvisionapp.view.FileAdapter;
 import com.example.torchvisionapp.R;
 import com.example.torchvisionapp.TextConverter;
 import com.example.torchvisionapp.databinding.FragmentHomeBinding;
-import com.example.torchvisionapp.viewmodel.FileExplorer;
-import com.google.android.gms.dynamic.SupportFragmentWrapper;
+import com.example.torchvisionapp.model.FileExplorer;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class HomeFragment extends Fragment implements ItemClickListener, FileItemClick, DeleteFile {
     ImageView btnCamera, btnAddFolder, btnTranslate;

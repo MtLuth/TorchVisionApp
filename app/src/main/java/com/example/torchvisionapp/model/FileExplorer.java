@@ -1,4 +1,4 @@
-package com.example.torchvisionapp.viewmodel;
+package com.example.torchvisionapp.model;
 
 import android.content.Context;
 import android.util.Log;

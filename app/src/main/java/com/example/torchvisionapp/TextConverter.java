@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,13 +21,10 @@ import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityTextConverterBinding;
 import com.example.torchvisionapp.databinding.DialogAddFileBinding;
-import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
-import com.example.torchvisionapp.databinding.PickFolderLayoutBinding;
 import com.example.torchvisionapp.fragment.PickFolderDialogFragment;
 import com.example.torchvisionapp.model.DocumentFile;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.FileAdapter;
-import com.example.torchvisionapp.viewmodel.FileExplorer;
 import com.example.torchvisionapp.viewmodel.TextConverterViewModel;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,7 +37,6 @@ import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 

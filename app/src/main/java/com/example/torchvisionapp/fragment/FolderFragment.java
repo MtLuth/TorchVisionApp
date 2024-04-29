@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +21,7 @@ import com.example.torchvisionapp.ReadFile;
 import com.example.torchvisionapp.databinding.FragmentMyFolderBinding;
 import com.example.torchvisionapp.model.FileItem;
 import com.example.torchvisionapp.view.FileAdapter;
-import com.example.torchvisionapp.viewmodel.FileExplorer;
+import com.example.torchvisionapp.model.FileExplorer;
 
 import java.io.File;
 import java.util.ArrayList;
