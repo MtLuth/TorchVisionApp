@@ -87,7 +87,6 @@ public class HomeFragment extends Fragment implements ItemClickListener, FileIte
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        Toast.makeText(context, "Attach", Toast.LENGTH_SHORT).show();
     }
 
     @Override

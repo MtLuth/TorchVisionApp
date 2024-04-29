@@ -213,13 +213,12 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
         pickFolderDialogFragment.setClickListener(new DialogButtonClickListener() {
             @Override
             public void onPositiveButtonClick(String path) {
-                Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
                 showAddFileDialog("txt",path);
             }
 
             @Override
             public void onNegativeButtonClick() {
-                Toast.makeText(getApplicationContext(), "cancel", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

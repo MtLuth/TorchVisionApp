@@ -78,7 +78,7 @@ public class PickFolderDialogFragment extends DialogFragment {
                     selectedFolderName = getContext().getFilesDir().getPath();
                 }
                 else {
-                    Toast.makeText(getContext(), selectedFolderName, Toast.LENGTH_SHORT).show();
+
                 }
                 if (clickListener!=null) {
                     clickListener.onPositiveButtonClick(selectedFolderName);

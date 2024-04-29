@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityReadFileBinding;
 
@@ -51,7 +52,8 @@ public class ReadFile extends AppCompatActivity {
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                shareFile(uri);
+                Toast.makeText(getApplicationContext(), "aâa", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -77,4 +79,13 @@ public class ReadFile extends AppCompatActivity {
                     }
                 }
             }
+    private void shareFile(String path) {
+        File file = new File(path);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, file.getName());
+        intent.putExtra(Intent.EXTRA_TEXT, txtContent.getText());
+
+        startActivity(Intent.createChooser(intent, "Choose a Platform"));
+    }
 }

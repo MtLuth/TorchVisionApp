@@ -23,9 +23,6 @@
         android:theme="@style/Theme.TorchVisionApp"
         tools:targetApi="31">
         <activity
-            android:name=".OpenFolder"
-            android:exported="false" />
-        <activity
             android:name=".ReadFile"
             android:exported="false" />
         <activity
