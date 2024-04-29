@@ -75,7 +75,7 @@ public class PickFolderDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (selectedFolderName == ""){
                     Toast.makeText(getContext(), "save to root", Toast.LENGTH_SHORT).show();
-                    selectedFolderName = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+                    selectedFolderName = getContext().getFilesDir().getPath();
                 }
                 else {
                     Toast.makeText(getContext(), selectedFolderName, Toast.LENGTH_SHORT).show();

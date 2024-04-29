@@ -1,17 +1,11 @@
 package com.example.torchvisionapp;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
-import static java.security.AccessController.getContext;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -63,12 +57,13 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     TextRecognizer textRecognizer;
     Uri imageUri;
     TextConverterViewModel viewModel;
-    public String mFolderSelected;
+    private String rootPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_converter);
+        rootPath = getApplicationContext().getFilesDir().getPath();
 
         viewModel = new ViewModelProvider(this).get(TextConverterViewModel.class);
 
@@ -106,9 +101,9 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             }
         });
         addClickListener();
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        String path = rootPath;
         Log.i("path", path);
-        folderList = viewModel.loadFolderList(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS));
+        folderList = viewModel.loadFolderList(new File(path));
         Log.i("countaaa", ""+folderList.size());
     }
 
@@ -205,14 +200,10 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     private void saveAsFile(String fileName, String format, String path) {
         DocumentFile docs = new DocumentFile(getApplicationContext());
         docs.saveAsFile(recgText.getText().toString(), fileName, format, path);
+        this.finish();
     }
     @Override
     public void onSettingItemClick(View v, int pos) {
-
-    }
-
-    @Override
-    public void onFileItemClick(View v, int pos) {
 
     }
 

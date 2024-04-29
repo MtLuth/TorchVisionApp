@@ -43,6 +43,7 @@ public class CustomAdapter extends ArrayAdapter<FileItem>{
         holder = new ViewHolder(binding);
         convertView = binding.getRoot();
         holder.binding.setFileItem(itemList.get(position));
+        holder.binding.btnDelete.setVisibility(View.INVISIBLE);
 
         convertView.setTag(holder);
 

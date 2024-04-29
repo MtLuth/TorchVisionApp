@@ -9,27 +9,25 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityReadFileBinding;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.net.URI;
 
 public class ReadFile extends AppCompatActivity {
-
     ActivityReadFileBinding binding;
 
-    Button btn_openFile;
+    Button btnShare;
 
     TextView txtContent;
+    String uri;
 
     private static final int REQUEST_CODE_PICK_FILE = 1;
 
@@ -43,30 +41,24 @@ public class ReadFile extends AppCompatActivity {
                 R.layout.activity_read_file
         );
 
-        btn_openFile = binding.btnOpenFile;
+        btnShare = binding.btnShare;
         txtContent = binding.contentFile;
+        Intent i = getIntent();
+        uri = i.getStringExtra("uri");
+        Log.i("Path123", uri);
+        readText(uri);
 
-        btn_openFile.setOnClickListener(new View.OnClickListener() {
+        btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openFile();
+
             }
         });
     }
 
-    private void openFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(Intent.createChooser(intent, "Chọn tệp"), REQUEST_CODE_PICK_FILE);
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PICK_FILE && resultCode == RESULT_OK) {
-            if (data != null) {
-                Uri uri = data.getData();
+    protected void readText(String path) {
+                Uri uri = Uri.fromFile(new File(path));
                 if (uri != null) {
                     try {
                         InputStream inputStream = getContentResolver().openInputStream(uri);
@@ -78,12 +70,11 @@ public class ReadFile extends AppCompatActivity {
                         }
                         reader.close();
                         txtContent.setText(stringBuilder.toString());
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 }
             }
-        }
-
-    }
 }
