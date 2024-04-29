@@ -7,7 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:821005090084:android:0332c670d002a8ff1007b1",
+        "mobilesdk_app_id": "1:821005090084:android:5657bfc17ff1a71a1007b1",
         "android_client_info": {
           "package_name": "com.example.torchvisionapp"
         }
