@@ -42,6 +42,28 @@ public class SignInActivity extends AppCompatActivity {
         emailTextView = findViewById(R.id.editEmail);
         passwordTextView = findViewById(R.id.editPassword);
 
+        emailTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackground(getDrawable(R.drawable.edit_text_actived));
+                } else {
+                    v.setBackground(getDrawable(R.drawable.input_text_custom));
+                }
+            }
+        });
+
+        passwordTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackground(getDrawable(R.drawable.edit_text_actived));
+                } else {
+                    v.setBackground(getDrawable(R.drawable.input_text_custom));
+                }
+            }
+        });
+
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

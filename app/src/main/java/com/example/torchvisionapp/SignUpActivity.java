@@ -27,6 +27,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button btnSignUp;
     TextView txtSignIn;
     EditText editEmail;
+    EditText editPass;
     Button btnContinueWithGuest;
 
     //    sign up
@@ -82,6 +83,18 @@ public class SignUpActivity extends AppCompatActivity {
 
         editEmail = binding.editEmail;
         editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackground(getDrawable(R.drawable.edit_text_actived));
+                } else {
+                    v.setBackground(getDrawable(R.drawable.input_text_custom));
+                }
+            }
+        });
+
+        editPass = binding.editPassword;
+        editPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {

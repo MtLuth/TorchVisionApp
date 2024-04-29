@@ -3,6 +3,7 @@ package com.example.torchvisionapp.ocr
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,6 +13,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -23,10 +25,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
 import com.bumptech.glide.Glide
+import com.example.torchvisionapp.DialogButtonClickListener
+import com.example.torchvisionapp.FileItemClick
 import com.example.torchvisionapp.R
+import com.example.torchvisionapp.databinding.DialogAddFileBinding
+import com.example.torchvisionapp.fragment.PickFolderDialogFragment
+import com.example.torchvisionapp.model.DocumentFile
+import com.example.torchvisionapp.model.FileItem
+import com.example.torchvisionapp.viewmodel.TextConverterViewModel
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -93,7 +104,11 @@ public class OCRActivity : AppCompatActivity() {
     //    property for display UI
     private var mEditText: EditText? = null
     private var mTextView: TextView? = null
+    private lateinit var actionSave: Button
+    private lateinit var actionCancel: Button
     private lateinit var mButton: Button
+    private var rootPath: String = ""
+    private var listFolders: ArrayList<FileItem> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,6 +136,41 @@ public class OCRActivity : AppCompatActivity() {
             val result = translate(fransText!!.text.toString())
             showTranslationResult(result)
             mButton.isEnabled = true
+        }
+
+        actionCancel = findViewById(R.id.actionCancel)
+        actionCancel.isVisible = false
+
+        actionSave = findViewById(R.id.actionSave)
+        actionSave.isVisible = false
+        actionSave.setOnClickListener {
+            val rootPath = applicationContext.filesDir.path
+            val file = File(rootPath)
+            val fileItemList: ArrayList<FileItem> = ArrayList()
+            val viewModel: TextConverterViewModel = ViewModelProvider(this).get(TextConverterViewModel::class.java)
+            listFolders = viewModel.loadFolderList(file)
+            val pickFolderDialogFragment:PickFolderDialogFragment = PickFolderDialogFragment(listFolders)
+            pickFolderDialogFragment.show(supportFragmentManager, "Pick Folder")
+            pickFolderDialogFragment.setClickListener(object: DialogButtonClickListener {
+                override fun onNegativeButtonClick() {
+
+                }
+
+                override fun onPositiveButtonClick(path: String?) {
+                    if (path!=null) {
+                        showAddFileDialog("txt", path)
+                    }
+                }
+            })
+        }
+
+        actionCancel.setOnClickListener {
+            val rec1: EditText = findViewById(R.id.recordText1);
+            rec1.setText("");
+            val rec2: EditText = findViewById(R.id.recordText2);
+            rec2.setText("")
+            actionCancel.isVisible = false
+            actionSave.isVisible = false
         }
 
         val buttonPickImage: Button = findViewById(R.id.button_pick_image)
@@ -232,6 +282,39 @@ public class OCRActivity : AppCompatActivity() {
         setChipsToLogView(HashMap<String, Int>())
         enableControls(true)
     }
+
+    private fun showAddFileDialog(format: String, path: String) {
+        val dialogAddFileBinding = DialogAddFileBinding.inflate(layoutInflater)
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setView(dialogAddFileBinding.root)
+
+        val editTextFileName = dialogAddFileBinding.editTextFileName
+        val btnSave = dialogAddFileBinding.btnSave
+        val btnCancel = dialogAddFileBinding.btnCancel
+
+        val alertDialog = dialogBuilder.create()
+
+        btnSave.setOnClickListener {
+            val fileName = editTextFileName.text.toString().trim()
+            if (fileName.isNotEmpty()) {
+                saveAsFile(fileName, format, path)
+                alertDialog.dismiss()
+            } else {
+                Toast.makeText(this, "Please enter file name", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        alertDialog.show()
+    }
+
+    private fun saveAsFile(fileName: String, format: String, path: String) {
+        val docs = DocumentFile(applicationContext)
+        val recgText: EditText = findViewById(R.id.recordText2)
+        docs.saveAsFile(recgText.text.toString(), fileName, format, path)
+        finish()
+    }
+
+
 
     //
     override fun onRequestPermissionsResult(
@@ -572,6 +655,9 @@ public class OCRActivity : AppCompatActivity() {
             Log.e("machine_translation", "JSONException ", e)
         }
         Log.d("Trans", english)
+        actionCancel.isVisible = true
+        actionSave.isVisible = true
+        resultImageView.setImageDrawable(null)
         return english
     }
 
