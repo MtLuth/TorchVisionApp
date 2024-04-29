@@ -200,6 +200,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
     private void saveAsFile(String fileName, String format, String path) {
         DocumentFile docs = new DocumentFile(getApplicationContext());
         docs.saveAsFile(recgText.getText().toString(), fileName, format, path);
+        this.finish();
     }
     @Override
     public void onSettingItemClick(View v, int pos) {

@@ -6,20 +6,12 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.example.torchvisionapp.databinding.ActivityMainScreenAppBinding;
-import com.example.torchvisionapp.databinding.FragmentSettingsBinding;
 import com.example.torchvisionapp.fragment.FolderFragment;
 import com.example.torchvisionapp.fragment.HeaderFragment;
 import com.example.torchvisionapp.fragment.HomeFragment;
@@ -28,13 +20,13 @@ import com.example.torchvisionapp.viewmodel.MainScreenActivityViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.util.ArrayList;
-
-public class MainScreenAppActivity extends AppCompatActivity{
+public class MainScreenAppActivity extends AppCompatActivity implements OnFragmentClick
+{
     ActivityMainScreenAppBinding binding;
     BottomNavigationView navigationView;
-    FragmentSettingsBinding fragmentSettingsBinding;
     MainScreenActivityViewModel viewModel;
+    String rootPath;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +46,10 @@ public class MainScreenAppActivity extends AppCompatActivity{
                 return true;
             }
         });
-
-        loadFragment(new HeaderFragment("HOME"), new HomeFragment());
+        rootPath = this.getFilesDir().getPath();
+        HomeFragment homeFragment = new HomeFragment();
+        homeFragment.setOnFragmentClick(this);
+        loadFragment(new HeaderFragment("HOME"), homeFragment);
     }
 
     public void loadFragment(HeaderFragment headerFragment, Fragment fragment) {
@@ -68,13 +62,38 @@ public class MainScreenAppActivity extends AppCompatActivity{
 
     public void loadFragmentByItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.navHome) {
-            loadFragment(new HeaderFragment("HOME"), new HomeFragment());
+            HomeFragment homeFragment = new HomeFragment();
+            homeFragment.setOnFragmentClick(this);
+            loadFragment(new HeaderFragment("HOME"), homeFragment);
         }
         if (item.getItemId() == R.id.navMyFolder) {
-            loadFragment(new HeaderFragment("MY FOLDER"), new FolderFragment());
+            FolderFragment folderFragment = new FolderFragment();
+            folderFragment.setOpenFolderOnFragment(this);
+            folderFragment.path = rootPath;
+            loadFragment(new HeaderFragment("MY FOLDER"), folderFragment);
         }
         if (item.getItemId() == R.id.navSetting) {
             loadFragment(new HeaderFragment("SETTINGS"), new SettingFragment());
         }
+    }
+
+    @Override
+    public void openFolder(String path, String folderName) {
+        FolderFragment fragmentMyFolder = new FolderFragment();
+        fragmentMyFolder.path = path;
+        HeaderFragment headerFragment = new HeaderFragment(folderName);
+        headerFragment.previousPath = rootPath;
+        headerFragment.setOnFragmentClick(this);
+        loadFragment(headerFragment, fragmentMyFolder);
+    }
+
+    @Override
+    public void back(String previousPath) {
+        FolderFragment fragmentMyFolder = new FolderFragment();
+        fragmentMyFolder.path = previousPath;
+        fragmentMyFolder.setOpenFolderOnFragment(this);
+        HeaderFragment headerFragment = new HeaderFragment("MY FOLDERS");
+        headerFragment.previousPath = "";
+        loadFragment(headerFragment, fragmentMyFolder);
     }
 }

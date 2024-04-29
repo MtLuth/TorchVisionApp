@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.torchvisionapp.DeleteFile;
 import com.example.torchvisionapp.FileItemClick;
 import com.example.torchvisionapp.ItemClickListener;
+import com.example.torchvisionapp.OnFragmentClick;
 import com.example.torchvisionapp.ReadFile;
 import com.example.torchvisionapp.TranslateActivity;
 import com.example.torchvisionapp.databinding.DialogAddFolderBinding;
@@ -52,7 +53,12 @@ public class HomeFragment extends Fragment implements ItemClickListener, FileIte
     private FileAdapter folderAdapter;
     private ArrayList<FileItem> fileItemArrayList;
     private String rootPath;
+    private OnFragmentClick fragmentClick;
     PickFolderLayoutBinding binding;
+
+    public void setOnFragmentClick(OnFragmentClick fragmentClick) {
+        this.fragmentClick = fragmentClick;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,8 +86,8 @@ public class HomeFragment extends Fragment implements ItemClickListener, FileIte
     }
     @Override
     public void onAttach(@NonNull Context context) {
-
         super.onAttach(context);
+        Toast.makeText(context, "Attach", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -177,7 +183,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, FileIte
                 newFolder.setIcon(R.drawable.iconfolder_actived);
                 newFolder.setType("directory");
                 newFolder.setStatus("0 files");
-                fileItemArrayList.add(newFolder);
+                fileItemArrayList.add(0, newFolder);
                 folderAdapter.notifyDataSetChanged();
                 Toast.makeText(requireContext(), "Folder created successfully ", Toast.LENGTH_SHORT).show();
             } else {
@@ -188,7 +194,15 @@ public class HomeFragment extends Fragment implements ItemClickListener, FileIte
         }
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        fileItemArrayList = new ArrayList<>();
+        showExistingFolders();
+        showAllFileTxt();
+        folderAdapter.setFileList(fileItemArrayList);
+        folderAdapter.notifyDataSetChanged();
+    }
 
     private void showExistingFolders() {
         String path = rootPath;
@@ -220,7 +234,7 @@ public class HomeFragment extends Fragment implements ItemClickListener, FileIte
             for (File file : fileArrayList) {
                 FileItem fileItem = new FileItem();
                 fileItem.setName(file.getName());
-                fileItem.setIcon(R.drawable.icon_image_to_text);
+                fileItem.setIcon(R.drawable.docs);
                 fileItem.setPath(file.getPath());
                 long date = file.lastModified();
                 Date status = new Date(date);
@@ -245,9 +259,10 @@ public class HomeFragment extends Fragment implements ItemClickListener, FileIte
     public void fileClick(View v, int pos) {
         FileItem file = fileItemArrayList.get(pos);
         if (file.getType()=="directory") {
-            Toast.makeText(getContext(), "Directory", Toast.LENGTH_SHORT).show();
+            if (fragmentClick != null) {
+                fragmentClick.openFolder(file.getPath(), file.getName());
+            }
         } else {
-            Toast.makeText(getContext(), "txt", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(getContext(), ReadFile.class);
             i.putExtra("uri", file.getPath());
             startActivity(i);
