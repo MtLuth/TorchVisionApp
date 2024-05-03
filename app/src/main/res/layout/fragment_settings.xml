@@ -23,10 +23,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"
             android:text="Your Privacy Matters!"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:paddingLeft="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerViewListSettingItem" />
 
@@ -38,6 +38,15 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/titlePrivacy"
             app:layout_constraintTop_toBottomOf="@+id/titlePrivacy" />
+
+        <TextView
+            android:id="@+id/txtUid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:text="UID"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -10,7 +10,7 @@
         <item name="android:background">@drawable/button_custom_2</item>
     </style>
 
-    <style name="ButtonStyle2" parent="Widget.AppCompat.Button">
+    <style name="ButtonStyle2" parent="Widget.AppCompat.Button">xxxx
         <item name="android:background">@drawable/button_custom_2</item>
     </style>
 

@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +77,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(), MainScreenAppActivity.class);
+                i.putExtra("email", "");
                 startActivity(i);
                 finish();
             }
@@ -117,7 +119,8 @@ public class SignInActivity extends AppCompatActivity {
 
                     // if sign in is successful => navigate to home activity
                     Intent i = new Intent(getApplicationContext(), MainScreenAppActivity.class);
-                    i.putExtra("email", emailTextView.getText());
+                    i.putExtra("email", emailTextView.getText().toString());
+                    Log.i("user", emailTextView.getText()+"");
                     startActivity(i);
                 } else {
                     // sign in failed

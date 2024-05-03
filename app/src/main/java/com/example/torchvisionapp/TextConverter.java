@@ -83,6 +83,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             @Override
             public void onClick(View v) {
                 ImagePicker.with(TextConverter.this)
+                        .crop()
                         .cameraOnly()	//User can only select image from Gallery
                         .start();	//Default Request Code is ImagePicker.REQUEST_CODE
             }
@@ -91,6 +92,7 @@ public class TextConverter extends AppCompatActivity implements ItemClickListene
             @Override
             public void onClick(View v) {
                 ImagePicker.with(TextConverter.this)
+                        .crop()
                         .galleryOnly()	//User can only select image from Gallery
                         .start();	//Default Request Code is ImagePicker.REQUEST_CODE
             }

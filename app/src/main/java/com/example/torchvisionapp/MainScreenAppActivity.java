@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.torchvisionapp.databinding.ActivityMainScreenAppBinding;
@@ -40,6 +41,7 @@ public class MainScreenAppActivity extends AppCompatActivity implements OnFragme
         navigationView = binding.bottomNavigation;
         Intent i = getIntent();
         email = i.getStringExtra("email");
+        Log.i("user1", email+"");
 
         viewModel = new ViewModelProvider(this)
                 .get(MainScreenActivityViewModel.class);
@@ -78,8 +80,9 @@ public class MainScreenAppActivity extends AppCompatActivity implements OnFragme
         }
         if (item.getItemId() == R.id.navSetting) {
             SettingFragment settingFragment = new SettingFragment();
-            settingFragment.email = email;
-            loadFragment(new HeaderFragment("SETTINGS"), new SettingFragment());
+            settingFragment.setEmail(email);
+            Log.i("user3", email);
+            loadFragment(new HeaderFragment("SETTINGS"), settingFragment);
         }
     }
 

@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(currentItem+1, true);
                 }
                 else {
-                    Intent i = new Intent(getApplicationContext(), SignUpActivity.class);
+                    Intent i = new Intent(getApplicationContext(), SignInActivity.class);
                     startActivity(i);
                     finish();
                 }

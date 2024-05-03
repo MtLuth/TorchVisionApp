@@ -4,6 +4,7 @@ package com.example.torchvisionapp.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +37,12 @@ public class SettingFragment extends Fragment implements ItemClickListener {
     ArrayList<SettingItem> settingItemArrayList = new ArrayList<>();
     ArrayList<String> privacyList = new ArrayList<>();
     SettingItemAdapter settingItemAdapter;
-    public String email = null;
+    private String email;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -47,6 +52,7 @@ public class SettingFragment extends Fragment implements ItemClickListener {
     @Override
     public void onStart() {
         super.onStart();
+        Log.i("user5", email+"");
     }
 
     @Nullable
@@ -58,6 +64,11 @@ public class SettingFragment extends Fragment implements ItemClickListener {
                 R.layout.fragment_settings,
                 container,
                 false);
+        if (email.equals("")) {
+            binding.txtUid.setVisibility(View.INVISIBLE);
+        } else {
+            binding.txtUid.setText(email);
+        }
         loadSettingItem(binding);
         loadPrivacy(binding);
         return binding.getRoot();
@@ -75,11 +86,10 @@ public class SettingFragment extends Fragment implements ItemClickListener {
     private void loadSettingItem(FragmentSettingsBinding binding) {
 
         settingItemArrayList = viewModel.loadSettingItemList();
-        if (email != null) {
+        Log.i("email", email);
+        if (!email.equals("")) {
             settingItemArrayList.get(0).setTitle("Sign out");
         }
-
-
         settingItemAdapter = new SettingItemAdapter(settingItemArrayList, getContext());
         settingItemAdapter.setClickListener(this);
         binding.recyclerViewListSettingItem.setAdapter(settingItemAdapter);
@@ -100,5 +110,13 @@ public class SettingFragment extends Fragment implements ItemClickListener {
             Intent i = new Intent(v.getContext(), ContactUs.class);
             startActivity(i);
         }
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
