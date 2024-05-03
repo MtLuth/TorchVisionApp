@@ -35,15 +35,6 @@ import org.opencv.utils.Converters.vector_float_to_Mat
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.GpuDelegate
 
-/**
- * description:
- * here is the class to run the OCR models
- * the OCR process is broken down into 2 stages:
- * 1. Text detection
- * - this state using [EAST model](https://tfhub.dev/sayakpaul/lite-model/east-text-detector/fp16/1)
- * 2. Text recognition
- * - this state using [Keras OCR model](https://tfhub.dev/tulasiram58827/lite-model/keras-ocr/float16/2)
- */
 
 class OCRModelExecutor(context: Context, private var useGPU: Boolean = false) : AutoCloseable {
     private var gpuDelegate: GpuDelegate? = null
@@ -100,6 +91,7 @@ class OCRModelExecutor(context: Context, private var useGPU: Boolean = false) : 
             return ModelExecutionResult(emptyBitmap, exceptionLog, HashMap<String, Int>())
         }
     }
+
 
     // define func to predict the bounding boxes by using Text detection model => stage 1: Text detection
     private fun detectTexts(data: Bitmap) {
@@ -158,8 +150,6 @@ class OCRModelExecutor(context: Context, private var useGPU: Boolean = false) : 
                     continue
                 }
 
-                // compute the rotated bounding boxes and confiences (heavily based on OpenCV example):
-                // https://github.com/opencv/opencv/blob/master/samples/dnn/text_detection.py
                 val offsetX = x * 4.0
                 val offsetY = y * 4.0
 
@@ -298,8 +288,7 @@ class OCRModelExecutor(context: Context, private var useGPU: Boolean = false) : 
     }
 
 
-    // base:
-    // https://github.com/tensorflow/tensorflow/blob/master/tensorflow/lite/java/demo/app/src/main/java/com/example/android/tflitecamerademo/ImageClassifier.java
+
     @Throws(IOException::class)
     private fun loadModelFile(context: Context, modelFile: String): MappedByteBuffer {
         val fileDescriptor = context.assets.openFd(modelFile)

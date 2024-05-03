@@ -12,21 +12,11 @@ import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.support.image.ops.TransformToGrayscaleOp
 
-/** Collection of image reading and manipulation utilities in the form of static functions. */
 abstract class ImageUtils {
     companion object {
-
-        /**
-         * Helper function used to convert an EXIF orientation enum into a transformation matrix that
-         * can be applied to a bitmap.
-         *
-         * @param orientation
-         * - One of the constants from [ExifInterface]
-         */
         private fun decodeExifOrientation(orientation: Int): Matrix {
             val matrix = Matrix()
 
-            // Apply transformation corresponding to declared EXIF orientation
             when (orientation) {
                 ExifInterface.ORIENTATION_NORMAL, ExifInterface.ORIENTATION_UNDEFINED -> Unit
                 ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90F)
@@ -44,87 +34,13 @@ abstract class ImageUtils {
                     matrix.postRotate(90F)
                 }
 
-                // Error out if the EXIF orientation is invalid
+
                 else -> throw IllegalArgumentException("Invalid orientation: $orientation")
             }
 
-            // Return the resulting matrix
             return matrix
         }
 
-        /**
-         * sets the Exif orientation of an image. this method is used to fix the exit of pictures taken
-         * by the camera
-         *
-         * @param filePath
-         * - The image file to change
-         * @param value
-         * - the orientation of the file
-         */
-        fun setExifOrientation(filePath: String, value: String) {
-            val exif = ExifInterface(filePath)
-            exif.setAttribute(ExifInterface.TAG_ORIENTATION, value)
-            exif.saveAttributes()
-        }
-
-        /** Transforms rotation and mirroring information into one of the [ExifInterface] constants */
-        fun computeExifOrientation(rotationDegrees: Int, mirrored: Boolean) = when {
-            rotationDegrees == 0 && !mirrored -> ExifInterface.ORIENTATION_NORMAL
-            rotationDegrees == 0 && mirrored -> ExifInterface.ORIENTATION_FLIP_HORIZONTAL
-            rotationDegrees == 180 && !mirrored -> ExifInterface.ORIENTATION_ROTATE_180
-            rotationDegrees == 180 && mirrored -> ExifInterface.ORIENTATION_FLIP_VERTICAL
-            rotationDegrees == 270 && mirrored -> ExifInterface.ORIENTATION_TRANSVERSE
-            rotationDegrees == 90 && !mirrored -> ExifInterface.ORIENTATION_ROTATE_90
-            rotationDegrees == 90 && mirrored -> ExifInterface.ORIENTATION_TRANSPOSE
-            rotationDegrees == 270 && mirrored -> ExifInterface.ORIENTATION_ROTATE_270
-            rotationDegrees == 270 && !mirrored -> ExifInterface.ORIENTATION_TRANSVERSE
-            else -> ExifInterface.ORIENTATION_UNDEFINED
-        }
-
-        /**
-         * Decode a bitmap from a file and apply the transformations described in its EXIF data
-         *
-         * @param file
-         * - The image file to be read using [BitmapFactory.decodeFile]
-         */
-        fun decodeBitmap(file: File): Bitmap {
-            // First, decode EXIF data and retrieve transformation matrix
-            val exif = ExifInterface(file.absolutePath)
-            val transformation = decodeExifOrientation(
-                exif.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_ROTATE_90
-                )
-            )
-
-            // Read bitmap using factory methods, and transform it using EXIF data
-            val options = BitmapFactory.Options()
-            val bitmap = BitmapFactory.decodeFile(file.absolutePath, options)
-            return Bitmap.createBitmap(
-                BitmapFactory.decodeFile(file.absolutePath),
-                0,
-                0,
-                bitmap.width,
-                bitmap.height,
-                transformation,
-                true
-            )
-        }
-
-        /**
-         * Convert a bitmap to a TensorImage for the recognition model with target size and
-         * normalization
-         *
-         * @param bitmapIn
-         * - the bitmap to convert
-         * @param width
-         * - target width of the converted TensorImage
-         * @param height
-         * - target height of the converted TensorImage
-         * @param means
-         * - means of the images
-         * @param stds
-         * - stds of the images
-         */
         fun bitmapToTensorImageForRecognition(
             bitmapIn: Bitmap, width: Int, height: Int, mean: Float, std: Float
         ): TensorImage {
@@ -139,20 +55,6 @@ abstract class ImageUtils {
             return tensorImage
         }
 
-        /**
-         * Convert a bitmap to a TensorImage for the detection model with target size and normalization
-         *
-         * @param bitmapIn
-         * - the bitmap to convert
-         * @param width
-         * - target width of the converted TensorImage
-         * @param height
-         * - target height of the converted TensorImage
-         * @param means
-         * - means of the images
-         * @param stds
-         * - stds of the images
-         */
         fun bitmapToTensorImageForDetection(
             bitmapIn: Bitmap, width: Int, height: Int, means: FloatArray, stds: FloatArray
         ): TensorImage {
